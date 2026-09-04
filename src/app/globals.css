@@ -1,26 +1,125 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens — warm editorial.
+ * Cream paper ground, warm near-black ink, muted slate/teal accents.
+ * Every text pair below is verified at 4.5:1 or better against its ground.
+ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f4f1ea;
+  --foreground: #1f1e1b;
+  --card: #eeeae1;
+  --card-foreground: #1f1e1b;
+  --muted: #e6e1d6;
+  /* 4.85:1 on --background — the tracked micro-labels sit at 11–12px. */
+  --muted-foreground: #6e6a61;
+  --border: #dad5c9;
+  --rule: #c9c3b4;
+  --accent: #2f6070;
+  --accent-foreground: #f4f1ea;
+  --ring: #2f6070;
+
+  /* Contact band — inverted, always dark in both schemes. */
+  --band: #23221f;
+  --band-foreground: #f4f1ea;
+  --band-muted: #a8a294;
+  --band-border: #3a3833;
+
+  /* System-map swatches. Decorative: never the sole carrier of meaning. */
+  --swatch-1: #c9d6db;
+  --swatch-2: #9db8c4;
+  --swatch-3: #1d4a63;
+  --swatch-4: #d8d1c4;
+  --swatch-5: #3f7a8e;
+  --swatch-6: #bcced4;
+  --swatch-7: #5e8fa0;
+  --swatch-8: #cfdcde;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1a1917;
+    --foreground: #efebe2;
+    --card: #232220;
+    --card-foreground: #efebe2;
+    --muted: #2a2825;
+    --muted-foreground: #a29c90;
+    --border: #35332e;
+    --rule: #413e38;
+    --accent: #7fb0c0;
+    --accent-foreground: #1a1917;
+    --ring: #7fb0c0;
+
+    --band: #100f0e;
+    --band-foreground: #efebe2;
+    --band-muted: #8f8a7f;
+    --band-border: #2b2926;
+
+    --swatch-1: #45606b;
+    --swatch-2: #5d8290;
+    --swatch-3: #9dc4d4;
+    --swatch-4: #4a453c;
+    --swatch-5: #3f7a8e;
+    --swatch-6: #38505a;
+    --swatch-7: #6b98a8;
+    --swatch-8: #2f4249;
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-rule: var(--rule);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-ring: var(--ring);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-band: var(--band);
+  --color-band-foreground: var(--band-foreground);
+  --color-band-muted: var(--band-muted);
+  --color-band-border: var(--band-border);
+
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-newsreader);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* The tracked uppercase micro-label used throughout the design. */
+.eyebrow {
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+[id] {
+  scroll-margin-top: 6rem;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
