@@ -1,0 +1,23 @@
+# Serving the Next.js static export from Apache / LiteSpeed (Hostinger).
+# This file is copied verbatim into out/ at build time.
+
+Options -Indexes
+
+# Next.js writes its not-found page to /404.html.
+ErrorDocument 404 /404.html
+
+# The share image route has no extension; without this the server sends it
+# as application/octet-stream and social crawlers refuse to render it.
+<Files "opengraph-image">
+  ForceType image/png
+</Files>
+
+# Build assets under /_next/static are content-hashed: cache them forever.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css|woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.(html|xml|txt)$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+</IfModule>
