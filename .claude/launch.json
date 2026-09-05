@@ -12,6 +12,25 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "3200", "--bind", "127.0.0.1", "--directory", "out"],
       "port": 3200
+    },
+    {
+      "name": "voiyu-playground",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--yes", "@wp-playground/cli@3.1.52", "server",
+        "--wp=latest", "--php=8.2", "--port=9400", "--site-url=http://localhost:9400",
+        "--blueprint=C:/Users/pavan/Projects/voiyu/playground.blueprint.json",
+        "--mount-dir", "C:/Users/pavan/Projects/voiyu/theme/voiyu", "/wordpress/wp-content/themes/voiyu",
+        "--mount-dir", "C:/Users/pavan/Projects/voiyu/mu-plugins", "/wordpress/wp-content/mu-plugins",
+        "--mount-dir", "C:/Users/pavan/Projects/voiyu/scripts", "/wordpress/voiyu-scripts"
+      ],
+      "port": 9400
+    },
+    {
+      "name": "voiyu-wp",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "-f", "C:/Users/pavan/Projects/voiyu/docker-compose.yml", "up"],
+      "port": 9400
     }
   ]
 }
