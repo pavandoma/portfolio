@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# learning-log passphrase hash (scripts/make-auth.mjs) and local dev state
+/portfolio-data/

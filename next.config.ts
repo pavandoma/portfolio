@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
    */
   output: "export",
 
+  // /learning is written as learning/index.html, which Apache serves for
+  // /learning/ with no rewrite rules.
+  trailingSlash: true,
+
   // No `next/image` is used; this keeps the door open without a custom
   // loader, since the default optimiser needs a server.
   images: { unoptimized: true },

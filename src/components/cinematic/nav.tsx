@@ -1,11 +1,13 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import { useLenis } from "@/components/cinematic/smooth-scroll";
 import { ThemeToggle } from "@/components/cinematic/theme-toggle";
 import { profile } from "@/content/profile";
 import { gsap, useGSAP } from "@/lib/gsap";
 
+/** Sections of the one-page home. On any other page they link back to it. */
 const LINKS = [
   { id: "story", label: "Origin" },
   { id: "details", label: "Details" },
@@ -20,6 +22,9 @@ const TRAVEL = 24;
 
 export function Nav() {
   const lenis = useLenis();
+  const home = usePathname() === "/";
+  /** `#story` on the home page, `/#story` from anywhere else. */
+  const anchor = (id: string) => (home ? `#${id}` : `/#${id}`);
   const headerRef = useRef<HTMLElement>(null);
 
   /**
@@ -94,8 +99,9 @@ export function Nav() {
   );
 
   const go = (id: string) => (event: React.MouseEvent<HTMLAnchorElement>) => {
-    // Let native anchor behaviour handle it under reduced motion (no Lenis).
-    if (!lenis) return;
+    // Off the home page the link is a real navigation; under reduced motion
+    // (no Lenis) the browser's own anchor behaviour does the scrolling.
+    if (!lenis || !home) return;
     event.preventDefault();
     lenis.scrollTo(`#${id}`, { offset: 0, duration: 1.4 });
   };
@@ -120,7 +126,7 @@ export function Nav() {
         className="relative z-10 flex h-16 items-center justify-between gap-6 px-6 sm:px-10"
       >
         <a
-          href="#top"
+          href={home ? "#top" : "/"}
           onClick={go("top")}
           className="pointer-events-auto py-3 font-mono text-[11px] tracking-[0.18em] whitespace-nowrap uppercase text-foreground"
         >
@@ -131,7 +137,7 @@ export function Nav() {
           {/* Below `sm` there is no room for four links beside the name; the
               one that matters on a phone is Contact. */}
           <a
-            href="#contact"
+            href={anchor("contact")}
             onClick={go("contact")}
             className="pointer-events-auto py-3 font-mono text-[11px] tracking-[0.18em] uppercase text-muted transition-colors duration-150 hover:text-foreground sm:hidden"
           >
@@ -142,7 +148,7 @@ export function Nav() {
             {LINKS.map((link) => (
               <li key={link.id}>
                 <a
-                  href={`#${link.id}`}
+                  href={anchor(link.id)}
                   onClick={go(link.id)}
                   className="inline-block py-3 font-mono text-[11px] tracking-[0.18em] uppercase text-muted transition-colors duration-150 hover:text-foreground"
                 >
@@ -150,6 +156,15 @@ export function Nav() {
                 </a>
               </li>
             ))}
+            <li>
+              <a
+                href="/learning/"
+                aria-current={home ? undefined : "page"}
+                className="inline-block py-3 font-mono text-[11px] tracking-[0.18em] uppercase text-muted transition-colors duration-150 hover:text-foreground aria-[current=page]:text-foreground"
+              >
+                Learning
+              </a>
+            </li>
           </ul>
 
           <ThemeToggle />

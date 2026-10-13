@@ -21,3 +21,11 @@ ErrorDocument 404 /404.html
     Header set Cache-Control "public, max-age=0, must-revalidate"
   </FilesMatch>
 </IfModule>
+
+# The learning-log API reads and writes JSON that changes on every tick:
+# never cache it, and never let a browser sniff it into something else.
+<FilesMatch "^progress\.php$">
+  <IfModule mod_headers.c>
+    Header set Cache-Control "no-store"
+  </IfModule>
+</FilesMatch>
