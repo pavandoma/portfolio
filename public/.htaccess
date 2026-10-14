@@ -12,6 +12,17 @@ ErrorDocument 404 /404.html
   ForceType image/png
 </Files>
 
+# Browser-side protections for every response. No Content-Security-Policy here:
+# the host already sends upgrade-insecure-requests, and the static export relies
+# on inline scripts that a strict policy would block.
+<IfModule mod_headers.c>
+  Header always set Strict-Transport-Security "max-age=31536000"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
 # Build assets under /_next/static are content-hashed: cache them forever.
 <IfModule mod_headers.c>
   <FilesMatch "\.(js|css|woff2)$">
