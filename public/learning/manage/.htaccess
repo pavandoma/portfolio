@@ -1,12 +1,7 @@
-# Everything in this folder (the editing page and save.php) needs a login.
-# The password file lives outside the web root, next to portfolio-data/auth.php,
-# so a redeploy of the site never touches it. If that file is missing the server
-# answers 500, so a mistake here closes the door instead of opening it.
-AuthType Basic
-AuthName "Learning log"
-AuthUserFile /home/u280872626/domains/voiyu.com/portfolio-data/.htpasswd
-Require valid-user
-
+# The editing page is not linked anywhere and is kept out of search results.
+# What actually guards a change is the passphrase checked by save.php (a salted
+# PBKDF2 hash, 8 wrong guesses per visitor per 15 minutes). The host's Basic
+# login was tried here first and looped on this server, so it was removed.
 <IfModule mod_headers.c>
   Header always set Cache-Control "private, no-store"
   Header always set X-Robots-Tag "noindex, nofollow"
