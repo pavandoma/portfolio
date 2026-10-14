@@ -120,8 +120,10 @@ function handle(): void
         return;
     }
 
-    if ($method !== 'POST') {
-        header('Allow: GET, POST');
+    // Changes are only accepted through learning/manage/save.php, which sits
+    // behind the host's login. This public entry point is read-only.
+    if ($method !== 'POST' || !defined('PROGRESS_WRITABLE')) {
+        header('Allow: ' . (defined('PROGRESS_WRITABLE') ? 'GET, POST' : 'GET'));
         respond(405, ['error' => 'method_not_allowed']);
         return;
     }

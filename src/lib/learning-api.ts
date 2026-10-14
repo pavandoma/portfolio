@@ -4,11 +4,14 @@ import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import type { DoneMap } from "@/lib/learning-stats";
 
 /**
- * Where progress lives. In production this is the PHP endpoint that ships in
- * public/api/; during development NEXT_PUBLIC_PROGRESS_API points at
+ * Where progress lives. Reading is public (public/api/progress.php); changes go
+ * to public/learning/manage/save.php, which the host protects with a login.
+ * During development NEXT_PUBLIC_PROGRESS_API points both at
  * scripts/dev-progress-server.mjs.
  */
-const API = process.env.NEXT_PUBLIC_PROGRESS_API ?? "/api/progress.php";
+const DEV_API = process.env.NEXT_PUBLIC_PROGRESS_API;
+const READ_API = DEV_API ?? "/api/progress.php";
+const WRITE_API = DEV_API ?? "/learning/manage/save.php";
 const PASS_KEY = "learning:passphrase";
 
 // The passphrase is held for the tab's lifetime only (sessionStorage), never
@@ -46,7 +49,7 @@ export function useProgress() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch(API, { cache: "no-store" })
+    fetch(READ_API, { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : Promise.reject(new Error(String(res.status)))))
       .then((data: { done?: DoneMap; updated?: string | null }) => {
         if (cancelled) return;
@@ -63,7 +66,7 @@ export function useProgress() {
   }, []);
 
   const post = useCallback(async (body: Record<string, unknown>) => {
-    const res = await fetch(API, {
+    const res = await fetch(WRITE_API, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),

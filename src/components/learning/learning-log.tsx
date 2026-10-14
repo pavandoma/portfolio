@@ -31,7 +31,7 @@ function EditControl({
   onUnlock: (value: string) => Promise<boolean>;
   onLock: () => void;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [value, setValue] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -97,8 +97,15 @@ function EditControl({
   );
 }
 
-export function LearningLog() {
-  const { done, updated, load, message, owner, unlock, lock, toggle } = useProgress();
+/**
+ * `editable` is true only on the login-protected manage page. The public page
+ * never shows the passphrase box and never enables a checkbox, even if this
+ * browser tab happens to hold a passphrase.
+ */
+export function LearningLog({ editable = false }: { editable?: boolean }) {
+  const progress = useProgress();
+  const { done, updated, load, message, unlock, lock, toggle } = progress;
+  const owner = editable && progress.owner;
   const stats = useMemo(() => computeStats(done), [done]);
 
   const updatedLabel = updated
@@ -110,7 +117,7 @@ export function LearningLog() {
       <header>
         <div className="flex flex-wrap items-center justify-between gap-4">
           <p className={label}>{learning.label}</p>
-          <EditControl owner={owner} message={message} onUnlock={unlock} onLock={lock} />
+          {editable && <EditControl owner={owner} message={message} onUnlock={unlock} onLock={lock} />}
         </div>
         <h1 className="mt-5 max-w-4xl font-sans text-[clamp(2.25rem,6vw,5.5rem)] leading-[1] font-light tracking-[-0.04em] text-foreground">
           {learning.title}
@@ -137,7 +144,7 @@ export function LearningLog() {
           <Stat value={`${stats.streak}`} caption="Day streak" />
         </div>
 
-        <div className="mt-16 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="mt-16 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6">
           {stats.tracks.map((track) => (
             <Ring key={track.id} percent={track.percent} label={track.title} done={track.done} total={track.total} />
           ))}
