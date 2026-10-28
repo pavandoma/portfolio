@@ -25,6 +25,7 @@ Scores are heuristics computed by this tool. They are never presented as an empl
 | LLMs, MCP, Firecrawl, GitHub, external validators | [`docs/INTEGRATIONS.md`](docs/INTEGRATIONS.md) |
 | Rules taken from the source documents | [`docs/SOURCE_ANALYSIS.md`](docs/SOURCE_ANALYSIS.md) |
 | Example outputs (contact details masked) | [`docs/examples/`](docs/examples) |
+| Deploying to Vercel | [`docs/DEPLOY_VERCEL.md`](docs/DEPLOY_VERCEL.md) |
 
 ## Run it locally (no Docker)
 
@@ -107,6 +108,11 @@ docker compose up --build
 
 The backend container runs `alembic upgrade head` before it starts. Data is kept in the `pgdata` and
 `appdata` volumes; `docker compose down -v` deletes it.
+
+## Run it on Vercel
+
+Two Vercel projects (app and backend) plus a free Neon Postgres database, with the app locked to your
+Vercel account. Step-by-step: [`docs/DEPLOY_VERCEL.md`](docs/DEPLOY_VERCEL.md).
 
 ## The workflow in the app
 

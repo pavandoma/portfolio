@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Separate app with its own config (resume-platform/frontend).
+    "resume-platform/**",
   ]),
 ]);
 
