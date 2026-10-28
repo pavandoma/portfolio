@@ -1,0 +1,33 @@
+AI Engineer
+Company: Harborlight Analytics
+Location: Boston, MA (Hybrid, 3 days in office)
+Employment Type: Full-time
+
+[SYNTHETIC TEST FIXTURE - not a real vacancy]
+
+About Harborlight Analytics
+Harborlight Analytics builds document intelligence tools for regional banks and credit unions.
+
+What you'll do
+- Build and maintain retrieval-augmented generation (RAG) pipelines that answer questions over policy documents
+- Design prompt and context strategies, and evaluate LLM output quality with automated test sets
+- Containerize services with Docker and deploy them to AWS (ECS or Lambda)
+- Work with data engineers to keep document ingestion pipelines reliable
+- Write clear documentation for internal users
+
+Requirements
+- Bachelor's degree in Computer Science, Artificial Intelligence, or a related field
+- 1+ years of experience building machine learning or LLM applications
+- Strong Python and SQL skills
+- Hands-on experience with LLM frameworks such as LangChain or LangGraph
+- Experience with vector databases (e.g. Pinecone, FAISS, or pgvector)
+- Familiarity with AWS services and containerization
+
+Nice to have
+- Experience fine-tuning transformer models with Hugging Face
+- Exposure to LLM evaluation frameworks
+- Experience with FastAPI
+- AWS certification
+
+Benefits
+Health insurance, 401(k) match, and a learning budget.

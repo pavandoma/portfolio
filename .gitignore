@@ -40,3 +40,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# resume-platform: local data (resumes, job descriptions, generated files) and Python envs
+/resume-platform/data/
+/resume-platform/backend/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/

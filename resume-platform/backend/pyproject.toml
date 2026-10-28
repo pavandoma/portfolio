@@ -1,0 +1,18 @@
+[project]
+name = "resume-intelligence-platform"
+version = "1.0.0"
+description = "Evidence-based resume tailoring, matching and validation"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_default_fixture_loop_scope = "function"
+markers = ["e2e: end-to-end smoke tests that start real servers"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501", "B008"]

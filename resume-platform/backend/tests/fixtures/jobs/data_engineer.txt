@@ -1,0 +1,33 @@
+Data Engineer II
+
+[SYNTHETIC TEST FIXTURE - not a real vacancy]
+
+About Quillstone Logistics
+Quillstone Logistics runs warehouse and fleet operations across the Midwest. Our data team supports operations, finance and leadership reporting.
+
+Location: Columbus, OH - Remote (US)
+
+The Role:
+You will design and maintain the pipelines that move inventory, order and fleet data into our Snowflake warehouse, and build the models analysts rely on.
+
+Responsibilities:
+- Build and maintain ETL/ELT pipelines using Python, SQL and Apache Airflow
+- Design dimensional data models and normalized schemas for inventory and transactions
+- Implement data quality checks, alerting and error handling for pipeline failures
+- Tune slow queries and reduce warehouse costs
+- Document pipelines and write runbooks for on-call engineers
+- Work with operations stakeholders to define KPIs and reporting requirements
+
+Qualifications:
+- 3+ years of professional experience in data engineering
+- Advanced SQL, including window functions and CTEs
+- Experience with a cloud data warehouse (Snowflake, BigQuery or Redshift)
+- Experience with workflow orchestration tools such as Airflow or Dagster
+- Proficiency in Python
+- Bachelor's degree in a quantitative field or equivalent experience
+
+Preferred:
+- dbt experience
+- Experience with Kafka or other streaming systems
+- AWS experience (S3, Glue, Lambda)
+- Experience with Terraform

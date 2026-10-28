@@ -1,0 +1,27 @@
+## Machine Learning Engineer
+
+[SYNTHETIC TEST FIXTURE - not a real vacancy]
+
+Fernway Labs is hiring a Machine Learning Engineer to join our risk modeling team. Location: Austin, TX. This is an on-site role.
+
+## Responsibilities
+* Train, evaluate and ship classification models for credit risk and fraud detection
+* Own feature engineering and experiment tracking with MLflow
+* Build batch inference pipelines in Python and SQL
+* Partner with product and compliance stakeholders to validate model behavior
+* Monitor deployed models for drift and data quality issues
+
+## Minimum Qualifications
+* MS or PhD in Computer Science, Statistics, Machine Learning, or a related field
+* 2+ years of experience developing machine learning models
+* Proficiency in Python, scikit-learn, and pandas
+* Experience with deep learning frameworks such as PyTorch or TensorFlow
+* Solid understanding of model evaluation, statistics, and feature engineering
+
+## Preferred Qualifications
+* Experience with Kubernetes and Docker
+* Experience with Apache Spark
+* Background in financial services or banking
+* Experience with NLP or text classification
+
+Candidates must be authorized to work in the United States. We are unable to sponsor visas for this position.

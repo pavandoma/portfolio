@@ -1,0 +1,243 @@
+# Skills taxonomy used for job-description parsing, resume parsing and matching.
+#
+# Fields
+#   name      canonical name
+#   cat       display group (see `categories` below)
+#   aliases   true synonyms / spellings. Matching is case-insensitive unless `cs: true`.
+#   parents   broader concepts this skill satisfies. A candidate with PyTorch satisfies a
+#             requirement for "Deep Learning Frameworks"; the reverse is NOT true.
+#   family    true for narrow grouping concepts whose children are "related but not
+#             interchangeable" (PyTorch vs TensorFlow, ECS vs Kubernetes, MySQL vs PostgreSQL).
+#   related   extra "related but insufficient" links that are not expressed by a family.
+#   cs        aliases are matched case-sensitively (needed for short or ambiguous words).
+
+categories:
+  language: Languages
+  genai: LLMs & Generative AI
+  ml: Machine Learning
+  data_eng: Data Engineering
+  database: Databases
+  cloud: Cloud & DevOps
+  analytics: Analytics & Visualization
+  business: Business & Process
+  marketing: Marketing Analytics
+  concept: Concepts
+  soft: Professional Skills
+
+skills:
+  # ---- languages -------------------------------------------------------------
+  - {name: Python, cat: language, aliases: [python3, python 3]}
+  - {name: SQL, cat: language, aliases: [advanced sql, sql queries, sql querying, relational database querying, querying relational databases, structured query language], related: [Relational Databases]}
+  - {name: T-SQL, cat: language, aliases: [tsql, transact-sql], parents: [SQL]}
+  - {name: PL/SQL, cat: language, aliases: [plsql], parents: [SQL]}
+  - {name: R, cat: language, cs: true, aliases: [R programming, R language, RStudio]}
+  - {name: Java, cat: language, cs: true, aliases: [Java]}
+  - {name: Scala, cat: language}
+  - {name: JavaScript, cat: language, aliases: [javascript, js, ecmascript]}
+  - {name: TypeScript, cat: language}
+  - {name: Go, cat: language, cs: true, aliases: [Golang, golang]}
+  - {name: C++, cat: language, aliases: [cpp]}
+  - {name: C#, cat: language, aliases: [csharp]}
+  - {name: Rust, cat: language, cs: true}
+  - {name: Bash, cat: language, aliases: [shell scripting, shell script, bash scripting]}
+  - {name: SAS, cat: language, cs: true}
+  - {name: MATLAB, cat: language, aliases: [matlab]}
+  - {name: VBA, cat: language, cs: true}
+  - {name: DAX, cat: language, cs: true}
+
+  # ---- generative AI / LLMs ----------------------------------------------------
+  - {name: Large Language Models, cat: genai, aliases: [LLM, LLMs, large language model, foundation models, LLM applications], parents: [Generative AI, NLP]}
+  - {name: Generative AI, cat: genai, aliases: [GenAI, Gen AI, generative artificial intelligence], parents: [Machine Learning]}
+  - {name: RAG, cat: genai, aliases: [RAG systems, RAG pipelines, retrieval-augmented generation, retrieval augmented generation, retrieval-augmented, retrieval augmented], parents: [Large Language Models, Information Retrieval]}
+  - {name: Prompt Engineering, cat: genai, aliases: [prompt design, prompting], parents: [Large Language Models]}
+  - {name: Context Engineering, cat: genai, aliases: [context management], parents: [Large Language Models]}
+  - {name: Fine-tuning, cat: genai, aliases: [fine tuning, finetuning, LLM fine-tuning, model fine-tuning, LoRA, PEFT, QLoRA], parents: [Large Language Models, Deep Learning]}
+  - {name: LLM Evaluation, cat: genai, aliases: [LLM evals, evals, model evaluation for LLMs, LLM benchmarking, RAG evaluation], parents: [Large Language Models, Model Evaluation]}
+  - {name: AI Agents, cat: genai, aliases: [agentic AI, agentic workflows, multi-agent systems, autonomous agents, tool calling, function calling], parents: [Large Language Models]}
+  - {name: LLM Frameworks, cat: genai, family: true, parents: [Large Language Models]}
+  - {name: LangChain, cat: genai, parents: [LLM Frameworks]}
+  - {name: LangGraph, cat: genai, parents: [LLM Frameworks, AI Agents]}
+  - {name: LlamaIndex, cat: genai, aliases: [llama index, llama-index], parents: [LLM Frameworks]}
+  - {name: Semantic Kernel, cat: genai, parents: [LLM Frameworks]}
+  - {name: DSPy, cat: genai, parents: [LLM Frameworks]}
+  - {name: Hugging Face, cat: genai, aliases: [huggingface, hugging face transformers, transformers library, HF transformers], parents: [NLP, Deep Learning]}
+  - {name: Transformers, cat: ml, aliases: [transformer models, transformer architecture, BERT, GPT], parents: [Deep Learning, NLP]}
+  - {name: Embeddings, cat: genai, aliases: [text embeddings, vector embeddings, embedding models, sentence transformers, sentence-transformers], parents: [NLP]}
+  - {name: Vector Databases, cat: genai, family: true, aliases: [vector database, vector DB, vector DBs, vector stores, vector store, vector search], parents: [Information Retrieval]}
+  - {name: Pinecone, cat: genai, parents: [Vector Databases]}
+  - {name: FAISS, cat: genai, aliases: [faiss], parents: [Vector Databases]}
+  - {name: Chroma, cat: genai, aliases: [ChromaDB, chroma db], parents: [Vector Databases]}
+  - {name: Weaviate, cat: genai, parents: [Vector Databases]}
+  - {name: Milvus, cat: genai, parents: [Vector Databases]}
+  - {name: Qdrant, cat: genai, parents: [Vector Databases]}
+  - {name: pgvector, cat: genai, parents: [Vector Databases, PostgreSQL]}
+  - {name: OpenAI API, cat: genai, aliases: [OpenAI, GPT-4, GPT-4o, ChatGPT API], parents: [LLM APIs]}
+  - {name: Anthropic Claude, cat: genai, aliases: [Claude, Claude API, Anthropic API], parents: [LLM APIs]}
+  - {name: LLM APIs, cat: genai, family: true, parents: [Large Language Models]}
+  - {name: Amazon Bedrock, cat: genai, aliases: [AWS Bedrock, Bedrock], parents: [AWS, LLM APIs]}
+  - {name: Structured Outputs, cat: genai, aliases: [structured output validation, structured output, JSON mode], parents: [Large Language Models]}
+  - {name: Information Retrieval, cat: concept, aliases: [semantic search, retrieval systems, search relevance, hybrid search]}
+  - {name: Model Context Protocol, cat: genai, aliases: [MCP], cs: false, parents: [AI Agents]}
+
+  # ---- machine learning ----------------------------------------------------------
+  - {name: Machine Learning, cat: ml, aliases: [ML, machine-learning, ML models, ML engineering]}
+  - {name: Deep Learning, cat: ml, aliases: [neural networks, deep neural networks, DNN], parents: [Machine Learning]}
+  - {name: Deep Learning Frameworks, cat: ml, family: true, aliases: [deep learning framework, DL frameworks], parents: [Deep Learning]}
+  - {name: PyTorch, cat: ml, aliases: [pytorch, torch], parents: [Deep Learning Frameworks]}
+  - {name: TensorFlow, cat: ml, aliases: [tensorflow, tf2], parents: [Deep Learning Frameworks]}
+  - {name: Keras, cat: ml, parents: [Deep Learning Frameworks]}
+  - {name: JAX, cat: ml, cs: true, parents: [Deep Learning Frameworks]}
+  - {name: Classical ML Libraries, cat: ml, family: true, parents: [Machine Learning]}
+  - {name: Scikit-learn, cat: ml, aliases: [scikit learn, sklearn, scikit-learn], parents: [Classical ML Libraries]}
+  - {name: XGBoost, cat: ml, aliases: [xgboost], parents: [Classical ML Libraries, Gradient Boosting]}
+  - {name: LightGBM, cat: ml, parents: [Classical ML Libraries, Gradient Boosting]}
+  - {name: Gradient Boosting, cat: ml, aliases: [boosted trees, GBM], parents: [Machine Learning]}
+  - {name: NLP, cat: ml, aliases: [natural language processing, text analytics, text mining, computational linguistics], parents: [Machine Learning]}
+  - {name: Text Classification, cat: ml, aliases: [intent classification, intent classifier, document classification, sentiment analysis], parents: [NLP]}
+  - {name: Computer Vision, cat: ml, aliases: [CV, image recognition, object detection, image classification], parents: [Deep Learning]}
+  - {name: Feature Engineering, cat: ml, aliases: [feature selection, feature extraction], parents: [Machine Learning]}
+  - {name: Model Evaluation, cat: ml, aliases: [model validation, evaluation metrics, model assessment, model comparison], parents: [Machine Learning]}
+  - {name: MLOps, cat: ml, aliases: [ML ops, ML operations, model deployment, model serving, ML pipelines, machine learning operations], parents: [Machine Learning]}
+  - {name: Experiment Tracking, cat: ml, family: true, aliases: [experiment management], parents: [MLOps]}
+  - {name: MLflow, cat: ml, aliases: [mlflow], parents: [Experiment Tracking]}
+  - {name: Weights & Biases, cat: ml, aliases: [wandb, W&B], parents: [Experiment Tracking]}
+  - {name: Kubeflow, cat: ml, parents: [MLOps]}
+  - {name: Amazon SageMaker, cat: ml, aliases: [SageMaker, AWS SageMaker], parents: [AWS, MLOps]}
+  - {name: Vertex AI, cat: ml, parents: [GCP, MLOps]}
+  - {name: Azure Machine Learning, cat: ml, aliases: [Azure ML], parents: [Azure, MLOps]}
+  - {name: Recommender Systems, cat: ml, aliases: [recommendation systems, recommendation engines], parents: [Machine Learning]}
+  - {name: Time-Series Analysis, cat: ml, aliases: [time series analysis, time-series decomposition, time series decomposition, time series forecasting, forecasting], parents: [Statistics]}
+  - {name: Credit Risk Modeling, cat: ml, aliases: [credit scoring, credit risk scoring, credit risk], parents: [Machine Learning]}
+  - {name: Customer Segmentation, cat: analytics, aliases: [segmentation, clustering customers, audience segmentation], parents: [Machine Learning]}
+  - {name: Supervised Learning, cat: ml, aliases: [classification models, regression models], parents: [Machine Learning]}
+  - {name: Unsupervised Learning, cat: ml, aliases: [clustering], parents: [Machine Learning]}
+  - {name: Reinforcement Learning, cat: ml, aliases: [RL, RLHF], cs: true, parents: [Machine Learning]}
+
+  # ---- data engineering --------------------------------------------------------
+  - {name: ETL, cat: data_eng, aliases: [ETL pipelines, ETL pipeline, extract transform load, data ingestion], parents: [Data Pipelines], related: [ELT]}
+  - {name: ELT, cat: data_eng, aliases: [ELT pipelines, extract load transform], parents: [Data Pipelines], related: [ETL]}
+  - {name: Data Pipelines, cat: data_eng, aliases: [data pipeline, pipelines, data workflows, pipeline development], parents: [Data Engineering]}
+  - {name: Data Engineering, cat: data_eng, aliases: [data platform engineering]}
+  - {name: Data Modeling, cat: data_eng, aliases: [data modelling, data models, dimensional data models, schema design, database design, normalized schema, normalized schemas, normalized database schema, dimensional modeling, star schema, database schema, schema redesign], parents: [Data Engineering]}
+  - {name: Data Quality, cat: data_eng, aliases: [data validation, data quality checks, data quality gates, data integrity, validation rules, data governance], parents: [Data Engineering]}
+  - {name: Data Warehousing, cat: data_eng, family: true, aliases: [data warehouse, data warehouses, data lake, lakehouse, DWH], parents: [Data Engineering]}
+  - {name: Snowflake, cat: data_eng, parents: [Data Warehousing]}
+  - {name: BigQuery, cat: data_eng, aliases: [Google BigQuery], parents: [Data Warehousing, GCP]}
+  - {name: Amazon Redshift, cat: data_eng, aliases: [Redshift], parents: [Data Warehousing, AWS]}
+  - {name: Databricks, cat: data_eng, parents: [Data Warehousing, Apache Spark]}
+  - {name: Workflow Orchestration, cat: data_eng, family: true, aliases: [pipeline orchestration, job scheduling], parents: [Data Pipelines]}
+  - {name: Apache Airflow, cat: data_eng, aliases: [Airflow, MWAA], parents: [Workflow Orchestration]}
+  - {name: Prefect, cat: data_eng, parents: [Workflow Orchestration]}
+  - {name: Dagster, cat: data_eng, parents: [Workflow Orchestration]}
+  - {name: dbt, cat: data_eng, aliases: [data build tool, dbt core, dbt cloud], parents: [Data Modeling]}
+  - {name: Distributed Data Processing, cat: data_eng, family: true, aliases: [big data, big data processing, distributed computing frameworks], parents: [Data Engineering]}
+  - {name: Apache Spark, cat: data_eng, aliases: [Spark, Spark SQL], parents: [Distributed Data Processing]}
+  - {name: PySpark, cat: data_eng, aliases: [pyspark], parents: [Apache Spark, Python]}
+  - {name: Hadoop, cat: data_eng, aliases: [HDFS, Hive, MapReduce], parents: [Distributed Data Processing]}
+  - {name: Stream Processing, cat: data_eng, family: true, aliases: [streaming data, real-time data pipelines, event streaming, streaming pipelines], parents: [Data Pipelines]}
+  - {name: Apache Kafka, cat: data_eng, aliases: [Kafka], parents: [Stream Processing]}
+  - {name: Amazon Kinesis, cat: data_eng, aliases: [Kinesis], parents: [Stream Processing, AWS]}
+  - {name: Apache Flink, cat: data_eng, aliases: [Flink], parents: [Stream Processing]}
+  - {name: Real-Time Reporting, cat: analytics, aliases: [real-time dashboards, real-time KPI dashboards, real-time analytics], parents: [Dashboards]}
+  - {name: Query Optimization, cat: data_eng, aliases: [query tuning, SQL optimization, query performance, optimizing queries, query refactoring, SQL query refactoring, performance tuning, tune slow queries, tuning queries, slow queries, query runtime], parents: [SQL]}
+  - {name: Window Functions, cat: data_eng, aliases: [SQL window functions, CTEs, common table expressions, analytic functions], parents: [SQL]}
+  - {name: Pandas, cat: analytics, aliases: [pandas], parents: [Python, Data Analysis]}
+  - {name: NumPy, cat: analytics, aliases: [numpy], parents: [Python]}
+  - {name: Polars, cat: analytics, parents: [Python, Data Analysis]}
+
+  # ---- databases ---------------------------------------------------------------
+  - {name: Relational Databases, cat: database, family: true, aliases: [RDBMS, relational database, relational DBs, SQL databases]}
+  - {name: PostgreSQL, cat: database, aliases: [Postgres, postgresql, psql], parents: [Relational Databases]}
+  - {name: MySQL, cat: database, aliases: [mysql, MariaDB], parents: [Relational Databases]}
+  - {name: SQL Server, cat: database, aliases: [Microsoft SQL Server, MS SQL, MSSQL], parents: [Relational Databases]}
+  - {name: Oracle Database, cat: database, aliases: [Oracle DB, Oracle SQL], parents: [Relational Databases]}
+  - {name: SQLite, cat: database, parents: [Relational Databases]}
+  - {name: NoSQL Databases, cat: database, family: true, aliases: [NoSQL, non-relational databases]}
+  - {name: MongoDB, cat: database, aliases: [Mongo], parents: [NoSQL Databases]}
+  - {name: DynamoDB, cat: database, aliases: [Amazon DynamoDB], parents: [NoSQL Databases, AWS]}
+  - {name: Cassandra, cat: database, parents: [NoSQL Databases]}
+  - {name: Redis, cat: database, parents: [NoSQL Databases]}
+  - {name: Elasticsearch, cat: database, aliases: [OpenSearch, ELK], parents: [NoSQL Databases, Information Retrieval]}
+
+  # ---- cloud & devops ----------------------------------------------------------
+  - {name: Cloud Platforms, cat: cloud, family: true, aliases: [cloud platforms, cloud computing, public cloud, cloud platform, cloud services, cloud infrastructure, cloud environments]}
+  - {name: AWS, cat: cloud, aliases: [Amazon Web Services, AWS Cloud], parents: [Cloud Platforms]}
+  - {name: Azure, cat: cloud, aliases: [Microsoft Azure], parents: [Cloud Platforms]}
+  - {name: GCP, cat: cloud, aliases: [Google Cloud, Google Cloud Platform], parents: [Cloud Platforms]}
+  - {name: AWS EC2, cat: cloud, aliases: [EC2, Amazon EC2], parents: [AWS]}
+  - {name: AWS ECS, cat: cloud, aliases: [ECS, Amazon ECS, Elastic Container Service, Fargate, AWS Fargate], parents: [AWS, Container Orchestration, Container Deployment]}
+  - {name: AWS Lambda, cat: cloud, aliases: [Lambda, Lambda functions], cs: false, parents: [AWS, Serverless]}
+  - {name: AWS S3, cat: cloud, aliases: [S3, Amazon S3], parents: [AWS]}
+  - {name: AWS Glue, cat: cloud, aliases: [Glue], cs: true, parents: [AWS, ETL]}
+  - {name: Serverless, cat: cloud, aliases: [serverless computing, serverless architecture]}
+  - {name: Containerization, cat: cloud, aliases: [containers, containerized, containerised, container-based]}
+  - {name: Container Deployment, cat: cloud, aliases: [container deployment, deploying containers, containerized deployment, container-based deployment], parents: [Containerization]}
+  - {name: Docker, cat: cloud, aliases: [docker, Dockerfiles, docker compose], parents: [Containerization]}
+  - {name: Container Orchestration, cat: cloud, family: true, aliases: [orchestration platforms], parents: [Containerization]}
+  - {name: Kubernetes, cat: cloud, aliases: [k8s, EKS, AKS, GKE], parents: [Container Orchestration, Container Deployment]}
+  - {name: CI/CD, cat: cloud, aliases: [CI CD, continuous integration, continuous delivery, continuous deployment, GitHub Actions, Jenkins, GitLab CI]}
+  - {name: Infrastructure as Code, cat: cloud, family: true, aliases: [IaC]}
+  - {name: Terraform, cat: cloud, parents: [Infrastructure as Code]}
+  - {name: AWS CloudFormation, cat: cloud, aliases: [CloudFormation, AWS CDK], parents: [Infrastructure as Code, AWS]}
+  - {name: Git, cat: cloud, aliases: [git, GitHub, GitLab, version control, Bitbucket]}
+  - {name: Linux, cat: cloud, aliases: [Unix, Ubuntu]}
+  - {name: Monitoring, cat: cloud, aliases: [observability, monitoring infrastructure, alerting, logging and monitoring, CloudWatch, Prometheus, Grafana, Datadog]}
+  - {name: Distributed Systems, cat: cloud, aliases: [distributed system, distributed computing]}
+  - {name: Production Deployment, cat: cloud, aliases: [deploying to production, production systems, production environments, production ML systems]}
+  - {name: Reliability Engineering, cat: cloud, aliases: [reliability optimization, system reliability, SRE, site reliability]}
+  - {name: Web Frameworks, cat: cloud, family: true, aliases: [backend frameworks, API frameworks]}
+  - {name: FastAPI, cat: cloud, aliases: [fastapi], parents: [Web Frameworks, REST APIs]}
+  - {name: Flask, cat: cloud, parents: [Web Frameworks]}
+  - {name: Django, cat: cloud, parents: [Web Frameworks]}
+  - {name: REST APIs, cat: cloud, aliases: [REST, RESTful APIs, RESTful, API development, web APIs, APIs]}
+  - {name: Microservices, cat: cloud, aliases: [microservice architecture, service-oriented architecture]}
+
+  # ---- analytics & BI ------------------------------------------------------------
+  - {name: Data Analysis, cat: analytics, aliases: [data analytics, analyzing data, exploratory data analysis, EDA, quantitative analysis, analyze trends, trend analysis, data analysis role]}
+  - {name: Statistics, cat: analytics, parents: [Data Analysis], aliases: [statistical analysis, statistical modeling, hypothesis testing, regression analysis, inferential statistics, probability]}
+  - {name: A/B Testing, cat: analytics, aliases: [AB testing, experimentation, A/B tests, controlled experiments, split testing], parents: [Statistics]}
+  - {name: Data Visualization, cat: analytics, aliases: [visualization, data viz, visualisation, charts], parents: [Data Analysis]}
+  - {name: Dashboards, cat: analytics, aliases: [dashboard, dashboarding, KPI dashboards, reporting dashboards], parents: [Data Visualization]}
+  - {name: KPI Reporting, cat: analytics, aliases: [KPIs, KPI tracking, metrics reporting, business reporting, reporting, operational reporting, KPI, recurring reports, automated reports, automate recurring reports], parents: [Data Analysis]}
+  - {name: BI Tools, cat: analytics, family: true, aliases: [business intelligence tools, BI tools, BI platforms], parents: [Business Intelligence]}
+  - {name: Business Intelligence, cat: analytics, aliases: [BI, business intelligence]}
+  - {name: Tableau, cat: analytics, parents: [BI Tools, Dashboards]}
+  - {name: Power BI, cat: analytics, aliases: [PowerBI, Microsoft Power BI], parents: [BI Tools, Dashboards]}
+  - {name: Looker, cat: analytics, aliases: [Looker Studio, Google Data Studio], parents: [BI Tools, Dashboards]}
+  - {name: Qlik, cat: analytics, aliases: [QlikView, Qlik Sense], parents: [BI Tools, Dashboards]}
+  - {name: Excel, cat: analytics, aliases: [Microsoft Excel, MS Excel, spreadsheets, pivot tables, VLOOKUP, advanced Excel]}
+  - {name: Google Sheets, cat: analytics, parents: [Excel]}
+  - {name: Matplotlib, cat: analytics, aliases: [matplotlib], parents: [Data Visualization, Python]}
+  - {name: Seaborn, cat: analytics, parents: [Data Visualization, Python]}
+  - {name: Plotly, cat: analytics, parents: [Data Visualization]}
+  - {name: Jupyter, cat: analytics, aliases: [Jupyter notebooks, notebooks]}
+
+  # ---- business / operations ----------------------------------------------------
+  - {name: Requirements Gathering, cat: business, aliases: [business requirements, requirements analysis, gathering requirements, requirements elicitation, user stories]}
+  - {name: Stakeholder Management, cat: business, aliases: [stakeholder communication, working with stakeholders, stakeholders, cross-functional collaboration, cross-functional teams, cross-functionally]}
+  - {name: Process Improvement, cat: business, aliases: [process optimization, workflow optimization, continuous improvement, Lean Six Sigma, Six Sigma]}
+  - {name: Technical Documentation, cat: business, aliases: [documentation, runbooks, standard operating procedures, SOPs, technical writing]}
+  - {name: Agile, cat: business, aliases: [Scrum, Kanban, agile methodologies, sprint planning]}
+  - {name: Jira, cat: business, aliases: [JIRA, Confluence]}
+  - {name: Inventory Management, cat: business, aliases: [stock tracking, inventory tracking, asset tracking, inventory, resource allocation, asset utilization]}
+  - {name: Operations Analytics, cat: business, aliases: [operational analytics, operations analysis, operational decision-making, operational efficiency], parents: [Data Analysis]}
+  - {name: Financial Analysis, cat: business, aliases: [financial modeling, forecasting revenue, budgeting]}
+  - {name: Product Analytics, cat: analytics, aliases: [user analytics, funnel analysis, cohort analysis, retention analysis]}
+  - {name: Troubleshooting, cat: business, aliases: [root cause analysis, incident management, debugging production issues, issue resolution]}
+  - {name: ServiceNow, cat: business}
+  - {name: ITIL, cat: business, cs: true}
+  - {name: Salesforce, cat: marketing, aliases: [SFDC, Salesforce CRM], parents: [CRM]}
+
+  # ---- marketing analytics -----------------------------------------------------
+  - {name: CRM, cat: marketing, cs: true, aliases: [CRM, customer relationship management, HubSpot]}
+  - {name: Google Analytics, cat: marketing, aliases: [GA4, Universal Analytics]}
+  - {name: Marketing Attribution, cat: marketing, aliases: [attribution modeling, multi-touch attribution, marketing mix modeling, MMM]}
+  - {name: Campaign Analytics, cat: marketing, aliases: [campaign performance, marketing analytics, digital marketing analytics, campaign measurement]}
+  - {name: SEO, cat: marketing, cs: true, aliases: [SEO, search engine optimization, SEM]}
+
+  # ---- professional skills -----------------------------------------------------
+  - {name: Communication, cat: soft, aliases: [communication skills, written and verbal communication, presentation skills, present findings, presenting findings, verbal communication]}
+  - {name: Problem Solving, cat: soft, aliases: [problem-solving, analytical thinking, critical thinking]}
+  - {name: Collaboration, cat: soft, aliases: [teamwork, collaborative]}
+  - {name: Mentoring, cat: soft, aliases: [mentorship, coaching, onboarding new engineers]}
+  - {name: Leadership, cat: soft, aliases: [team leadership, led a team, leading teams]}

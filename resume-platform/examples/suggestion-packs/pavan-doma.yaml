@@ -1,0 +1,64 @@
+# Wording suggestions for the master resume of Pavan Srinivas Doma.
+#
+# Written by an AI assistant (Claude Code) while building this platform. They are presentation
+# only: each variant must pass the fact check against the original bullet (no new numbers,
+# technologies, employers, or production / leadership / collaboration claims), and each one
+# stays "pending approval" until the candidate approves it in the Master Profile screen.
+# Variants tagged `summary` are short forms used only for the one-result line of the summary.
+candidate: Pavan Srinivas Doma
+origin: assistant
+suggestions:
+  - match: "Collaborated with operations team to design"
+    variants:
+      - text: "Designed and maintained a normalized schema for people, inventory and transactions with the operations team, using validation rules and data quality checks to keep transactional integrity at 100% for reliable reporting."
+        emphasis: [Data Modeling, Data Quality, SQL]
+  - match: "Reduced query runtime by 40%"
+    variants:
+      - text: "Built real-time KPI dashboards in advanced SQL (window functions, CTEs, aggregations) and optimized the queries behind them, cutting query runtime by 40%."
+        emphasis: [SQL, Query Optimization, Dashboards, KPI Reporting]
+      - text: "Cut query runtime by 40% while building real-time KPI dashboards in SQL."
+        emphasis: [summary]
+  - match: "Engineered production resource allocation pipeline"
+    variants:
+      - text: "Built a production resource allocation pipeline with SQL window functions and time-series decomposition, working with stakeholders to validate the business logic from extraction to the insights shared with leadership."
+        emphasis: [Data Pipelines, SQL, Time-Series Analysis]
+  - match: "Optimized ETL pipeline performance"
+    variants:
+      - text: "Improved ETL pipeline performance through SQL query refactoring and schema redesign, supporting real-time operational decisions that raised asset utilization efficiency by 25%."
+        emphasis: [ETL, Query Optimization, Data Modeling]
+      - text: "Raised asset utilization efficiency by 25% after refactoring SQL queries and redesigning the ETL schema."
+        emphasis: [summary]
+  - match: "Standardized & documented ETL pipelines"
+    variants:
+      - text: "Standardized and documented ETL pipelines for stock tracking and allocation, adding data quality gates and error handling that cut data ingestion errors by 30%; wrote runbooks that helped onboard new engineers faster."
+        emphasis: [ETL, Data Quality, Technical Documentation]
+      - text: "Cut data ingestion errors by 30% by adding data quality gates and error handling to ETL pipelines."
+        emphasis: [summary]
+  - match: "Designed production-scale RAG system"
+    variants:
+      - text: "Designed a retrieval-augmented generation (RAG) system and validated its semantic relevance at 97.5% accuracy with ML engineers; containerized it on AWS ECS with monitoring."
+        emphasis: [RAG, AWS ECS, LLM Evaluation]
+      - text: "Built a RAG system with 97.5% semantic relevance accuracy, containerized on AWS ECS."
+        emphasis: [summary]
+  - match: "Implemented context engineering, memory management"
+    variants:
+      - text: "Implemented context engineering, conversation memory and structured output validation so the assistant gave consistent, context-aware answers."
+        emphasis: [Context Engineering, Structured Outputs, Large Language Models]
+  - match: "Developed a credit risk scoring system"
+    variants:
+      - text: "Developed a credit risk scoring model and defined its feature engineering strategy with a cross-functional team."
+        emphasis: [Credit Risk Modeling, Feature Engineering]
+  - match: "Validated business logic demonstrated understanding"
+    variants:
+      - text: "Compared 5 model approaches in MLflow with senior engineers and checked the business logic against data quality trade-offs."
+        emphasis: [MLflow, Model Evaluation, Experiment Tracking]
+  - match: "Launched an intent classifier"
+    variants:
+      - text: "Built an intent classifier for banking customer queries covering 77 intent classes, reaching 89.5% accuracy."
+        emphasis: [Text Classification, NLP]
+      - text: "Built an NLP intent classifier for 77 banking query types at 89.5% accuracy."
+        emphasis: [summary]
+  - match: "Implemented a confidence-threshold pipeline"
+    variants:
+      - text: "Added a confidence threshold that let 49.6% of predictions skip manual review while keeping 99.8% accuracy on the auto-approved cases."
+        emphasis: [Text Classification, Model Evaluation]
