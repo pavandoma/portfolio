@@ -13,7 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { api, ApiError, waitForTask } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import type { Job, MatchReport, ResumeVersion } from "@/lib/types";
 import { useApi } from "@/lib/use-api";
 import { formatDate, score } from "@/lib/utils";
@@ -31,14 +31,12 @@ export function JobView({ id, duplicate }: { id: string; duplicate: boolean }) {
     setBusy("Generating, parsing and checking the resume…");
     setError(null);
     try {
-      const { task_id } = await api.post<{ task_id: string }>("/resumes/async", {
+      // One request (a few seconds): background tasks do not survive on serverless hosts such as Vercel.
+      const version = await api.post<{ id: string }>("/resumes", {
         job_id: id,
         page_target: pageTarget === "auto" ? undefined : Number(pageTarget),
       });
-      const result = await waitForTask<{ resume_version_id: string }>(task_id, (s) =>
-        setBusy(s === "running" ? "Generating, parsing and checking the resume…" : "Queued…"),
-      );
-      router.push(`/resumes/${result.resume_version_id}`);
+      router.push(`/resumes/${version.id}`);
     } catch (e) {
       setError(e as ApiError);
       setBusy(null);

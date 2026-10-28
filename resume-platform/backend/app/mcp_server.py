@@ -19,6 +19,7 @@ from app.db import init_db, session_scope
 from app.schemas.match import MatchReport
 from app.services import applications, profiles, resumes
 from app.services import jobs as job_service
+from app.services.storage import resolve_stored
 from app.tailoring.presets import list_presets
 
 server = MCPServer(
@@ -101,7 +102,7 @@ def generate_resume(job_id: str = "", variant: str = "") -> dict[str, Any]:
                        "ats_parsing": sc["ats_parsing"], "evidence_integrity": sc["evidence_integrity"],
                        "qa": sc["qa"], "critical_issues": sc["critical_issues"]},
             "needs_approval": sum(1 for c in v.change_log if c.get("requires_approval")),
-            "files": {f.kind: f.path for f in v.files},
+            "files": {f.kind: str(resolve_stored(get_settings(), f.path, s)) for f in v.files},
         }
 
 

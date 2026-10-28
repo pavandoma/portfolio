@@ -46,7 +46,7 @@ def audit(session: Session, entity_type: str, entity_id: str, action: str, detai
 def save_document(session: Session, settings: Settings, upload: ValidatedUpload, kind: str, text: str,
                   meta: dict | None = None) -> SourceDocument:
     doc_id = new_id()
-    path = store_upload(settings, doc_id, upload.kind, upload.content)
+    path = store_upload(settings, doc_id, upload.kind, upload.content, session=session)
     doc = SourceDocument(id=doc_id, kind=kind, file_type=upload.kind, display_name=upload.display_name,
                          sha256=sha256_bytes(upload.content), size_bytes=len(upload.content), storage_path=str(path),
                          text=text[: settings.max_text_chars], meta=meta or {})

@@ -188,8 +188,12 @@ def test_migrations_and_workflow_postgres(tmp_path, monkeypatch, synthetic_pdf):
     url = os.environ["RIP_TEST_POSTGRES_URL"]
     env = _env(tmp_path / "data", DATABASE_URL=url)
     _migration_round_trip(env)
+    _alembic("downgrade", "base", env=env)
 
+    # The hosted (Vercel) configuration: the app migrates an empty database itself and keeps files in it.
     monkeypatch.setenv("DATABASE_URL", url)
+    monkeypatch.setenv("RIP_AUTO_MIGRATE", "1")
+    monkeypatch.setenv("RIP_STORAGE", "db")
     reset_settings_cache()
     reset_engine()
     from app.main import create_app
@@ -200,6 +204,10 @@ def test_migrations_and_workflow_postgres(tmp_path, monkeypatch, synthetic_pdf):
                           files={"file": ("cv.pdf", synthetic_pdf, "application/pdf")}).status_code == 200
             job = c.post("/api/jobs", json={"text": job_text("ml_engineer")}).json()
             v = c.post("/api/resumes", json={"job_id": job["id"]}).json()
+            pdf_url = next(f["url"] for f in v["files"] if f["kind"] == "pdf")
+            original = c.get(pdf_url).content
+            shutil.rmtree(tmp_path / "data" / "outputs")  # as if another server instance answered
+            assert c.get(pdf_url).content == original
             v2 = c.post(f"/api/resumes/{v['id']}/edits", json={"ops": [
                 {"op": "remove_bullet", "bullet_id": v["content"]["experience"][0]["bullets"][-1]["id"]}]}).json()
             assert v2["version_no"] == 2

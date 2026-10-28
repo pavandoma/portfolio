@@ -17,6 +17,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 BACKEND_DIR = Path(__file__).resolve().parent.parent
 PLATFORM_DIR = BACKEND_DIR.parent
 DEFAULT_DATA_DIR = PLATFORM_DIR / "data"
+# Vercel sets VERCEL=1. Its functions have a read-only filesystem apart from a temporary /tmp, so files go to
+# the database (kept in /tmp only as a cache), the schema is migrated on start, and the API refuses to run
+# without a token.
+ON_VERCEL = os.environ.get("VERCEL") == "1"
 
 
 class Settings(BaseSettings):
@@ -27,15 +31,24 @@ class Settings(BaseSettings):
     )
 
     # Storage -----------------------------------------------------------------
-    data_dir: Path = Field(default=DEFAULT_DATA_DIR, alias="RIP_DATA_DIR")
-    # SQLite by default (local-first). Docker Compose sets a PostgreSQL URL.
+    data_dir: Path = Field(default=Path("/tmp/rip-data") if ON_VERCEL else DEFAULT_DATA_DIR, alias="RIP_DATA_DIR")
+    # SQLite by default (local-first). Docker Compose and Vercel set a PostgreSQL URL.
     database_url: str = Field(default="", alias="DATABASE_URL")
+    # "fs": uploads and generated files live in data_dir. "db": they are stored in the database and data_dir
+    # is only a cache (for hosts without a persistent disk).
+    storage: Literal["fs", "db"] = Field(default="db" if ON_VERCEL else "fs", alias="RIP_STORAGE")
+    # Apply Alembic migrations when the app starts (instead of creating tables directly).
+    auto_migrate: bool = Field(default=ON_VERCEL, alias="RIP_AUTO_MIGRATE")
 
     # HTTP server -------------------------------------------------------------
     cors_origins: str = Field(default="http://localhost:3000,http://127.0.0.1:3000", alias="RIP_CORS_ORIGINS")
     # Optional shared token. When set, every /api request must send
     # "Authorization: Bearer <token>". Recommended for any non-localhost deployment.
     api_token: SecretStr | None = Field(default=None, alias="RIP_API_TOKEN")
+    # Refuse API requests while no token is configured (on by default on Vercel, where the API is public).
+    require_token: bool = Field(default=ON_VERCEL, alias="RIP_REQUIRE_TOKEN")
+    # Interactive API docs at /docs; off on Vercel.
+    expose_docs: bool = Field(default=not ON_VERCEL, alias="RIP_EXPOSE_DOCS")
 
     # Upload limits -----------------------------------------------------------
     max_upload_bytes: int = Field(default=10 * 1024 * 1024, alias="RIP_MAX_UPLOAD_BYTES")
@@ -85,10 +98,20 @@ class Settings(BaseSettings):
         return self.data_dir / "outputs"
 
     @property
+    def missing_database(self) -> bool:
+        """On a host without a persistent disk, a local SQLite file would silently lose every change."""
+        return ON_VERCEL and not self.database_url.strip()
+
+    @property
     def resolved_database_url(self) -> str:
-        if self.database_url:
-            return self.database_url
-        return f"sqlite:///{(self.data_dir / 'resume_platform.db').as_posix()}"
+        url = self.database_url.strip()
+        if not url:
+            return f"sqlite:///{(self.data_dir / 'resume_platform.db').as_posix()}"
+        # Hosted Postgres providers hand out postgres:// or postgresql:// URLs; use the psycopg 3 driver.
+        for prefix in ("postgres://", "postgresql://"):
+            if url.startswith(prefix):
+                return "postgresql+psycopg://" + url[len(prefix):]
+        return url
 
     @property
     def cors_origin_list(self) -> list[str]:

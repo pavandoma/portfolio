@@ -9,7 +9,7 @@ import { ErrorState, Loading, PageHeader, Spinner, StatusBadge } from "@/compone
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { api, ApiError, waitForTask } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import type { Preset, ResumeVersion } from "@/lib/types";
 import { useApi } from "@/lib/use-api";
 import { formatDate, score } from "@/lib/utils";
@@ -26,9 +26,8 @@ export default function Resumes() {
     setBusy(true);
     setError(null);
     try {
-      const { task_id } = await api.post<{ task_id: string }>("/resumes/async", { variant });
-      const out = await waitForTask<{ resume_version_id: string }>(task_id);
-      router.push(`/resumes/${out.resume_version_id}`);
+      const version = await api.post<{ id: string }>("/resumes", { variant });
+      router.push(`/resumes/${version.id}`);
     } catch (e) {
       setError(e as ApiError);
       setBusy(false);

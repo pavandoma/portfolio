@@ -3,6 +3,28 @@ name = "resume-intelligence-platform"
 version = "1.0.0"
 description = "Evidence-based resume tailoring, matching and validation"
 requires-python = ">=3.11"
+# Runtime dependencies; kept identical to requirements.txt (a test checks this). Vercel installs from here.
+dependencies = [
+    "fastapi==0.162.0",
+    "uvicorn[standard]==0.54.0",
+    "pydantic==2.14.1",
+    "pydantic-settings==2.16.2",
+    "sqlalchemy==2.1.6",
+    "alembic==1.20.1",
+    "psycopg[binary]==3.3.6",
+    "python-multipart==0.0.32",
+    "httpx==0.28.1",
+    "pyyaml==6.0.3",
+    "pymupdf==2.0",
+    "python-docx==1.2.0",
+    "reportlab==5.1.0",
+    "mcp==2.3.0",
+    "anthropic==2.3.0",
+]
+
+[tool.vercel]
+# Vercel's Python runtime loads the FastAPI instance from here (see docs/DEPLOY_VERCEL.md).
+entrypoint = "app.main:app"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

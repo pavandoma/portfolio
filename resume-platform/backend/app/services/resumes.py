@@ -127,7 +127,7 @@ def _write_files(session: Session, settings: Settings, version: ResumeVersion, d
                  change_log: list[ChangeLogEntry], iterations: list[dict],
                  external: list[ExternalValidatorResult]) -> None:
     for f in list(version.files):
-        delete_stored(settings, f.path)
+        delete_stored(settings, f.path, session)
         version.files.remove(f)
     session.flush()
     bundle = ValidationBundle.model_validate(version.validation)
@@ -150,7 +150,7 @@ def _write_files(session: Session, settings: Settings, version: ResumeVersion, d
         }, indent=2, default=str).encode()),
     }
     for kind, (name, content) in files.items():
-        path = store_output(settings, version.id, name, content)
+        path = store_output(settings, version.id, name, content, session=session)
         version.files.append(GeneratedFile(kind=kind, filename=name, path=str(path),
                                            sha256=sha256_bytes(content), size_bytes=len(content)))
     session.flush()
@@ -314,7 +314,7 @@ def approve(session: Session, version_id: str) -> ResumeVersion:
 def delete_version(session: Session, settings: Settings, version_id: str) -> None:
     v = get_version(session, version_id)
     for f in v.files:
-        delete_stored(settings, f.path)
+        delete_stored(settings, f.path, session)
     session.delete(v)
     try:
         output_dir(settings, version_id).rmdir()

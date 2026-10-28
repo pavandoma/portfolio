@@ -21,6 +21,7 @@ import yaml
 from app.config import get_settings
 from app.core.security import validate_upload
 from app.db import init_db, session_scope
+from app.services.storage import resolve_stored
 
 
 def _print(obj) -> None:
@@ -74,7 +75,7 @@ def _copy_files(version, out: Path) -> list[str]:
     copied = []
     for f in version.files:
         dest = out / f.filename
-        shutil.copyfile(f.path, dest)
+        shutil.copyfile(resolve_stored(get_settings(), f.path), dest)
         copied.append(str(dest))
     return copied
 

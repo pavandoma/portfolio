@@ -114,7 +114,8 @@ def preview(version_id: str, page: int = Query(1, ge=1, le=5), dpi: int = Query(
 
     v = resumes.get_version(session, version_id)
     pdf_file = next((f for f in v.files if f.kind == "pdf"), None)
-    data = resolve_stored(get_settings(), pdf_file.path).read_bytes() if pdf_file else resumes.regenerate_pdf_preview(v)
+    data = (resolve_stored(get_settings(), pdf_file.path, session).read_bytes() if pdf_file
+            else resumes.regenerate_pdf_preview(v))
     with pymupdf.open(stream=data, filetype="pdf") as doc:
         if page > doc.page_count:
             raise NotFound("Page out of range")
@@ -129,7 +130,7 @@ def export_zip(version_id: str, session: Session = Depends(get_session)):
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
         for f in v.files:
-            zf.write(resolve_stored(settings, f.path), arcname=f.filename)
+            zf.write(resolve_stored(settings, f.path, session), arcname=f.filename)
     name = f"resume_v{v.version_no}_{version_id[:8]}.zip"
     return Response(content=buf.getvalue(), media_type="application/zip",
                     headers={"Content-Disposition": f'attachment; filename="{name}"'})
@@ -140,7 +141,7 @@ def download(file_id: str, inline: bool = False, session: Session = Depends(get_
     f = session.get(GeneratedFile, file_id)
     if not f:
         raise NotFound("File not found")
-    path = resolve_stored(get_settings(), f.path)
+    path = resolve_stored(get_settings(), f.path, session)
     ext = "." + f.filename.rsplit(".", 1)[-1]
     return FileResponse(path, media_type=MEDIA.get(ext, "application/octet-stream"), filename=f.filename,
                         content_disposition_type="inline" if inline else "attachment")
