@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import io
+import json
 import zipfile
 
 import pytest
@@ -183,3 +184,34 @@ def test_agent_import(seeded):
     assert out[0]["duplicate"] is False and out[1]["duplicate"] is True
     summary = client.get("/api/agent/summary").json()
     assert summary["profile"]["name"] == "Jordan Avery Lee" and len(summary["pipeline"]) == 1
+
+
+def test_approval_is_one_revision_and_applied_records_the_version(seeded):
+    client, prof = seeded
+    achs = prof["profile"]["roles"][0]["achievements"]
+    rewordings = {
+        achs[0]["id"]: "Built weekly Tableau loan performance dashboards using SQL views, cutting manual reporting "
+                       "time by 6 hours per week.",
+        achs[1]["id"]: "Developed an XGBoost churn model in Python with Scikit-learn that improved retention campaign "
+                       "targeting accuracy by 12%.",
+    }
+    # Assistant-written wording arrives unapproved (wording you type yourself is approved as you save it).
+    originals = {a["id"]: a["original_text"] for a in achs}
+    pack = {"origin": "assistant", "suggestions": [
+        {"match": originals[ach_id][:40], "variants": [{"text": text}]} for ach_id, text in rewordings.items()]}
+    r = client.post("/api/profile/suggestion-pack", files={"file": ("pack.json", json.dumps(pack), "application/json")})
+    assert r.status_code == 200, r.text
+    job = client.post("/api/jobs", json={"text": job_text("data_analyst")}).json()
+    v = client.post("/api/resumes", json={"job_id": job["id"]}).json()
+    used = {b["achievement_ids"][0] for e in v["content"]["experience"] for b in e["bullets"] if b["variant_id"]}
+    assert used >= set(rewordings)
+    revisions_before = len(client.get("/api/profile/revisions").json())
+    assert client.post(f"/api/resumes/{v['id']}/approve").json()["status"] == "approved"
+    revisions = client.get("/api/profile/revisions").json()
+    assert len(revisions) == revisions_before + 1 and "2 wording change(s) approved" in revisions[0]["reason"]
+    variants = {a["id"]: a["variants"] for a in client.get("/api/profile").json()["profile"]["roles"][0]["achievements"]}
+    assert all(var["approved"] for ach_id in rewordings for var in variants[ach_id])
+
+    # Marking the job as applied without picking a version records the approved one.
+    client.put(f"/api/applications/{job['id']}", json={"status": "applied"})
+    assert client.get("/api/applications").json()[0]["submitted_version_id"] == v["id"]

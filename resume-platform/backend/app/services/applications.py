@@ -38,6 +38,13 @@ def upsert(session: Session, job_id: str, *, status: str | None = None, resume_v
         if not v or v.job_id != job_id:
             raise ValueError("That resume version does not belong to this job.")
         app.resume_version_id = resume_version_id
+    elif status == "applied" and app.resume_version_id is None:
+        # Record which version went out: the latest approved one, else the latest generated one.
+        versions = session.scalars(select(ResumeVersion).where(ResumeVersion.job_id == job_id)
+                                   .order_by(ResumeVersion.version_no.desc())).all()
+        chosen = next((v for v in versions if v.status == "approved"), versions[0] if versions else None)
+        if chosen:
+            app.resume_version_id = chosen.id
     if notes is not None:
         app.notes = notes[:10000]
     if applied_at is not None:

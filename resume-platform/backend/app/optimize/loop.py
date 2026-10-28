@@ -20,7 +20,7 @@ from app.schemas.match import MatchReport, ScoreCard, Weights
 from app.schemas.profile import CandidateProfile
 from app.schemas.resume import ChangeLogEntry, OmittedItem, ResumeBullet, TailoredResume
 from app.schemas.validation import ATSReport, IntegrityReport, QAReport
-from app.tailoring.tailor import TailorOptions, TailorResult, choose_wording, tailor
+from app.tailoring.tailor import TailorOptions, TailorResult, choose_wording, sync_change_log, tailor
 from app.validation import ats as ats_mod
 from app.validation.integrity import check_integrity
 from app.validation.qa import check_quality
@@ -190,8 +190,7 @@ def optimize(profile: CandidateProfile, job: JobAnalysis, report: MatchReport | 
         fitted, pdf, fit_actions = fit_resume(current, reserve_projects=tr.reserve_projects if n == 1 else None,
                                               reserve_bullets=tr.reserve_bullets if n == 1 else None)
         if n == 1:
-            restored = {a.split(": ", 1)[1] for a in fit_actions if a.startswith("Restored")}
-            change_log = [c for c in change_log if not (c.kind == "project_removed" and c.target[:60] in restored)]
+            change_log = sync_change_log(profile, fitted, change_log)
         docx = render_docx(fitted)
         ats_reports, integrity, qa, alignment = evaluate(profile, job, report, fitted, pdf, docx, weights,
                                                           options.today, use_pdftotext)

@@ -304,14 +304,10 @@ def approve(session: Session, version_id: str) -> ResumeVersion:
     from app.schemas.common import utcnow
 
     v.approved_at = utcnow()
-    # Approved wording becomes approved in the master profile too (a new profile revision).
+    # Approved wording becomes approved in the master profile too (one new profile revision).
     used = [(b.achievement_ids[0], b.variant_id) for b in resume.all_bullets() if b.variant_id]
-    try:
-        for ach_id, var_id in used:
-            profiles.set_variant_approval(session, ach_id, var_id, True)
-    except (NotFound, ValueError):
-        pass
-    audit(session, "resume", v.id, "approved", {"variants_approved": len(used)})
+    newly = profiles.approve_variants(session, used, f"Approved {resume.header.target_title} resume v{v.version_no}")
+    audit(session, "resume", v.id, "approved", {"variants_approved": newly})
     return v
 
 

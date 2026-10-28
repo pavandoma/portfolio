@@ -318,6 +318,25 @@ def set_variant_approval(session: Session, achievement_id: str, variant_id: str,
     return rev, data
 
 
+def approve_variants(session: Session, pairs: list[tuple[str, str]], reason: str) -> int:
+    """Approve several wording variants in one profile revision. Variants that are missing, already approved
+    or failed the fact check are skipped. Returns how many were newly approved."""
+    profile, _rev, data = current(session)
+    approved = []
+    for achievement_id, variant_id in pairs:
+        found = data.find_achievement(achievement_id)
+        v = next((v for v in found[0].variants if v.id == variant_id), None) if found else None
+        if v is None or v.approved or (v.fact_check and not v.fact_check.passed):
+            continue
+        v.approved = True
+        approved.append((achievement_id, variant_id))
+    if approved:
+        _new_revision(session, profile, data, f"{reason} ({len(approved)} wording change(s) approved)")
+        for achievement_id, variant_id in approved:
+            audit(session, "achievement", achievement_id, "variant_approval", {"variant_id": variant_id, "approved": True})
+    return len(approved)
+
+
 def add_issues(session: Session, issues: list, reason: str) -> tuple[ProfileRevision, CandidateProfile]:
     profile, _rev, data = current(session)
     known = {i.id for i in data.issues}

@@ -651,12 +651,7 @@ def tailor(profile: CandidateProfile, job: JobAnalysis, report: MatchReport | No
                                         date=format_month(c.date) or c.date_text) for _r, c in certs]
 
     # ---- wording changes for the log ------------------------------------------
-    for entry in experience:
-        role = next(r for r in profile.roles if r.id == entry.role_id)
-        _log_bullets(change_log, entry.bullets, role.achievements, f"{entry.title}, {entry.organization}")
-    for pe in projects:
-        proj = next(p for p in profile.projects if p.id == pe.project_id)
-        _log_bullets(change_log, pe.bullets, proj.achievements, pe.name)
+    _log_entries(change_log, profile, experience, projects)
     for o in omitted:
         if o.item_type == "bullet":
             change_log.append(ChangeLogEntry(kind="bullet_removed", target=o.item_id, before=o.text, after=None,
@@ -687,6 +682,38 @@ def tailor(profile: CandidateProfile, job: JobAnalysis, report: MatchReport | No
     )
     return TailorResult(resume=resume, change_log=change_log, relevance=relevance,
                         reserve_projects=reserve_projects, reserve_bullets=reserve_bullets)
+
+
+def sync_change_log(profile: CandidateProfile, resume: TailoredResume,
+                    change_log: list[ChangeLogEntry]) -> list[ChangeLogEntry]:
+    """Bring the bullet entries of the change log in line with the resume after page fitting.
+
+    Fitting can restore reserved bullets and projects (or drop some for space) after the log was written;
+    every bullet on the page must still show its rewording, and nothing on the page may be logged as removed.
+    """
+    present = {a for b in resume.all_bullets() for a in b.achievement_ids}
+    project_names = {p.name for p in resume.projects}
+    log = [c for c in change_log
+           if c.kind not in ("bullet_reworded", "bullet_reordered")
+           and not (c.kind == "bullet_removed" and c.target in present)
+           and not (c.kind == "project_removed" and c.target in project_names)]
+    _log_entries(log, profile, resume.experience, resume.projects)
+    logged_removed = {c.target for c in log if c.kind == "bullet_removed"}
+    for o in resume.omitted:
+        if o.item_type == "bullet" and o.item_id not in present and o.item_id not in logged_removed:
+            log.append(ChangeLogEntry(kind="bullet_removed", target=o.item_id, before=o.text, after=None,
+                                      reason=o.reason, evidence_ids=[o.item_id]))
+    return log
+
+
+def _log_entries(log: list[ChangeLogEntry], profile: CandidateProfile, experience: list[ExperienceEntry],
+                 projects: list[ProjectEntry]) -> None:
+    for entry in experience:
+        role = next(r for r in profile.roles if r.id == entry.role_id)
+        _log_bullets(log, entry.bullets, role.achievements, f"{entry.title}, {entry.organization}")
+    for pe in projects:
+        proj = next(p for p in profile.projects if p.id == pe.project_id)
+        _log_bullets(log, pe.bullets, proj.achievements, pe.name)
 
 
 def _log_bullets(log: list[ChangeLogEntry], bullets: list[ResumeBullet], source: list[Achievement], where: str) -> None:

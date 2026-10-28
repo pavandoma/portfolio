@@ -165,3 +165,29 @@ def test_mcp_adapter_against_local_server():
     assert denied.status == "not_authorized" and denied.score is None
     external = MCPToolAdapter(cfg.model_copy(update={"local_only": False})).run(ctx)
     assert external.status == "not_authorized"  # external sharing is off by default
+
+
+def test_change_log_matches_fitted_resume(real_profile):
+    """Content restored into free page space is logged like any other change, and never as removed."""
+    import yaml
+
+    from app.services.profiles import apply_pack_to_profile
+
+    pack = Path(__file__).resolve().parents[2] / "examples" / "suggestion-packs" / "pavan-doma.yaml"
+    apply_pack_to_profile(real_profile, yaml.safe_load(pack.read_text()))
+    job = analyse_job(job_text("data_analyst"))
+    result = optimize(real_profile, job, score_profile(real_profile, job, today=TODAY), TailorOptions(today=TODAY),
+                      use_pdftotext=False)
+    final = result.final.resume
+    log = result.change_log
+    reworded = {c.target for c in log if c.kind == "bullet_reworded"}
+    removed = {c.target for c in log if c.kind in ("bullet_removed", "project_removed")}
+    originals = {a.id: a.original_text for a, _ in real_profile.all_achievements()}
+    for b in final.all_bullets():
+        if b.text.rstrip(".") != originals[b.achievement_ids[0]].rstrip("."):
+            assert b.id in reworded, b.text
+        assert b.achievement_ids[0] not in removed
+    assert not {p.name for p in final.projects} & removed
+    # Pending approvals in the log match the unapproved bullets on the page.
+    pending = {c.target for c in log if c.requires_approval and c.kind == "bullet_reworded"}
+    assert pending == {b.id for b in final.all_bullets() if not b.approved}
