@@ -165,6 +165,12 @@ def test_delete_and_purge(seeded):
     assert client.post("/api/system/purge", json={"confirm": "yes"}).status_code == 400
     assert client.post("/api/system/purge", json={"confirm": "DELETE ALL MY DATA"}).json()["deleted"]
     assert client.get("/api/profile").status_code == 404
+    # Nothing of the profile survives in the database file itself (deleted pages are vacuumed).
+    from app.config import get_settings
+
+    db_bytes = b"".join(f.read_bytes() for f in get_settings().data_dir.glob("resume_platform.db*"))
+    assert b"Jordan Avery Lee" not in db_bytes and b"Maplecrest" not in db_bytes
+    assert not any(get_settings().outputs_dir.iterdir()) and not any(get_settings().uploads_dir.iterdir())
 
 
 def test_agent_import(seeded):

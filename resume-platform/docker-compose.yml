@@ -1,0 +1,56 @@
+# Local deployment: PostgreSQL + FastAPI backend + Next.js frontend.
+#   cp .env.example .env    # then set POSTGRES_PASSWORD (see README)
+#   docker compose up --build
+# Ports are published on 127.0.0.1 only; nothing is exposed to the network.
+name: resume-platform
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: resume_platform
+      POSTGRES_USER: resume
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U resume -d resume_platform"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    # No published port: only the backend can reach the database.
+
+  backend:
+    build: ./backend
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgresql+psycopg://resume:${POSTGRES_PASSWORD}@db:5432/resume_platform
+      RIP_DATA_DIR: /data
+      RIP_CORS_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
+    volumes:
+      - appdata:/data
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8000:8000"
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    environment:
+      BACKEND_URL: http://backend:8000
+      BACKEND_API_TOKEN: ${RIP_API_TOKEN:-}
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3000:3000"
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  appdata:

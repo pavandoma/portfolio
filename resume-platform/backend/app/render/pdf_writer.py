@@ -69,7 +69,7 @@ def get_fonts(family: str) -> FontSet:
     paths = [_find(f) for f in files]
     if all(paths):
         names = [f"{base}", f"{base}-Bold", f"{base}-Italic", f"{base}-BoldItalic"]
-        for n, p in zip(names, paths):
+        for n, p in zip(names, paths, strict=True):
             if n not in pdfmetrics.getRegisteredFontNames():
                 pdfmetrics.registerFont(TTFont(n, p))
         pdfmetrics.registerFontFamily(base, normal=names[0], bold=names[1], italic=names[2], boldItalic=names[3])
@@ -114,7 +114,7 @@ def build_story(resume: TailoredResume, width: float, fonts: FontSet, size: floa
     story.append(Paragraph(_p(resume.header.name.upper()), st["name"]))
     story.append(Paragraph(_p(resume.header.target_title), st["title"]))
     contact_parts = []
-    for item, link in zip(resume.header.contact, resume.header.links + [""] * len(resume.header.contact)):
+    for item, link in zip(resume.header.contact, resume.header.links + [""] * len(resume.header.contact), strict=False):
         contact_parts.append(f'<a href="{_p(link)}">{_p(item)}</a>' if link else _p(item))
     story.append(Paragraph("  |  ".join(contact_parts), st["contact"]))
     story.append(Spacer(1, size * 0.5))

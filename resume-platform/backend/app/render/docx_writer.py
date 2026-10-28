@@ -116,7 +116,7 @@ def render_docx(resume: TailoredResume) -> bytes:
     cp = d.add_paragraph()
     cp.alignment = WD_ALIGN_PARAGRAPH.CENTER
     links = resume.header.links + [""] * len(resume.header.contact)
-    for i, (item, link) in enumerate(zip(resume.header.contact, links)):
+    for i, (item, link) in enumerate(zip(resume.header.contact, links, strict=False)):
         if i:
             sep = cp.add_run("  |  ")
             sep.font.size = Pt(size - 0.5)

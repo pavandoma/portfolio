@@ -26,6 +26,7 @@ def _isolated_data_dir(tmp_path, monkeypatch):
     from app.config import reset_settings_cache
     from app.db import reset_engine
 
+    monkeypatch.setenv("RIP_IGNORE_ENV_FILE", "1")  # a developer's .env must not leak into tests
     monkeypatch.setenv("RIP_DATA_DIR", str(tmp_path / "data"))
     monkeypatch.delenv("DATABASE_URL", raising=False)
     monkeypatch.setenv("LLM_PROVIDER", "none")

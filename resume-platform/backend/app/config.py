@@ -6,11 +6,12 @@ see ``app.core.logging`` for the redaction filter.
 
 from __future__ import annotations
 
+import os
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, SecretStr
+from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parent.parent
@@ -69,6 +70,12 @@ class Settings(BaseSettings):
     # Resume generation ---------------------------------------------------------
     max_revision_cycles: int = Field(default=3, alias="RIP_MAX_REVISION_CYCLES")
 
+    @field_validator("mcp_config_path", mode="before")
+    @classmethod
+    def _empty_path_is_unset(cls, v):
+        # "RIP_MCP_CONFIG=" in a .env file means "not configured", not the current directory.
+        return None if isinstance(v, str) and not v.strip() else v
+
     @property
     def uploads_dir(self) -> Path:
         return self.data_dir / "uploads"
@@ -98,6 +105,9 @@ class Settings(BaseSettings):
 
 @lru_cache
 def get_settings() -> Settings:
+    # RIP_IGNORE_ENV_FILE=1 (set by the test suite) reads the process environment only.
+    if os.environ.get("RIP_IGNORE_ENV_FILE") == "1":
+        return Settings(_env_file=None)
     return Settings()
 
 

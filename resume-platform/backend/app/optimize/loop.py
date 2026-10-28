@@ -17,7 +17,7 @@ from app.render.fit import fit_resume
 from app.schemas.common import stable_id
 from app.schemas.job import JobAnalysis
 from app.schemas.match import MatchReport, ScoreCard, Weights
-from app.schemas.profile import CandidateProfile, Project, Role
+from app.schemas.profile import CandidateProfile
 from app.schemas.resume import ChangeLogEntry, OmittedItem, ResumeBullet, TailoredResume
 from app.schemas.validation import ATSReport, IntegrityReport, QAReport
 from app.tailoring.tailor import TailorOptions, TailorResult, choose_wording, tailor
@@ -108,10 +108,8 @@ def revise(profile: CandidateProfile, job: JobAnalysis, resume: TailoredResume, 
     critical_spans = {d.message for d in diagnoses if d.code == "academic_production_claim"}
 
     def entries():
-        for e in new.experience:
-            yield e
-        for p in new.projects:
-            yield p
+        yield from new.experience
+        yield from new.projects
 
     # 1. Unsupported or production-in-academic bullets: fall back to wording that passes, else drop.
     for entry in entries():

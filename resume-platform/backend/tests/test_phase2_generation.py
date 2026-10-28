@@ -5,7 +5,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pymupdf
-import pytest
 import yaml
 
 from app.ingest.extract import extract_docx, extract_pdf
@@ -13,7 +12,7 @@ from app.jobs.jd_parser import analyse_job
 from app.matching.engine import score_profile
 from app.render.docx_writer import render_docx
 from app.render.fit import fit_resume
-from app.render.pdf_writer import page_count, render_pdf
+from app.render.pdf_writer import page_count
 from app.services.profiles import apply_pack_to_profile
 from app.tailoring.diff import bullet_diffs, token_diff
 from app.tailoring.presets import PRESETS, preset_job
@@ -163,3 +162,42 @@ def test_real_resume_tailoring_with_suggestions(real_profile):
     assert page_count(pdf) == 1
     extracted = extract_pdf(pdf)
     assert "PAVAN SRINIVAS DOMA" in extracted.text
+
+
+def test_thin_skills_section_gets_evidenced_neighbours_and_page_is_filled(real_profile):
+    """Analyst posting: evidenced data-engineering skills fill a thin section; unrelated ones stay out."""
+    from app.render.pdf_writer import last_page_fill
+
+    apply_pack_to_profile(real_profile, yaml.safe_load(PACK.read_text()))
+    result, _ = _tailor(real_profile, "data_analyst")
+    items = [i for line in result.resume.skills for i in line.items]
+    assert "Data Quality" in items and "ETL" in items
+    assert not {"PyTorch", "LangGraph", "AWS"} & set(items)
+    assert items.index("Data Quality") > items.index("Dashboards")  # neighbours rank after related skills
+    fitted, pdf, _ = fit_resume(result.resume, reserve_projects=result.reserve_projects,
+                                reserve_bullets=result.reserve_bullets)
+    assert page_count(pdf) == 1 and last_page_fill(pdf) > 0.8
+
+
+def test_fold_skill_groups_moves_unrelated_families_to_tools():
+    from app.tailoring.tailor import fold_skill_groups
+
+    order = ["language", "genai", "analytics", "cloud", "web", "security"]
+    groups = {c: [(0.5, f"{c}{i}", f"{c}{i}") for i in range(2)] for c in order}
+    fold_skill_groups(groups, order)
+    # Families with no neighbour share one "tools" line, and folding never loses an item or a group.
+    assert len(order) == 5 and order[-1] == "tools" and set(order) == set(groups)
+    assert sum(len(v) for v in groups.values()) == 12
+
+
+def test_skill_lines_at_most_five_for_broad_posting(synthetic_profile, real_profile):
+    """A posting spanning every skill family still yields at most five skill lines."""
+    posting = ("Senior Data & AI Platform Engineer\n\nRequirements:\n"
+               "- Python and SQL\n- PostgreSQL and MongoDB\n- Airflow, dbt, Spark and ETL pipelines\n"
+               "- Tableau, Excel and statistics\n- PyTorch, scikit-learn and feature engineering\n"
+               "- LangChain, RAG and prompt engineering\n- AWS, Docker, Kubernetes and Git\n"
+               "- Agile delivery and stakeholder management\n")
+    job = analyse_job(posting)
+    for profile in (synthetic_profile, real_profile):
+        result = tailor(profile, job, score_profile(profile, job, today=TODAY), TailorOptions(today=TODAY))
+        assert 1 <= len(result.resume.skills) <= 5

@@ -12,7 +12,7 @@ import traceback
 import uuid
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 log = logging.getLogger(__name__)
@@ -25,7 +25,7 @@ def submit(kind: str, fn: Callable[[], dict]) -> str:
     task_id = uuid.uuid4().hex
     with _lock:
         _tasks[task_id] = {"id": task_id, "kind": kind, "status": "queued", "result": None, "error": None,
-                           "created_at": datetime.now(timezone.utc).isoformat()}
+                           "created_at": datetime.now(UTC).isoformat()}
 
     def run():
         with _lock:

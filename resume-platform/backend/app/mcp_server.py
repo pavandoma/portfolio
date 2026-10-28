@@ -9,15 +9,16 @@ sends resume data anywhere; it returns analysis, scores and the paths of generat
 from __future__ import annotations
 
 import logging
-from typing import Any
 import sys
+from typing import Any
 
 from mcp.server.mcpserver import MCPServer
 
 from app.config import get_settings
 from app.db import init_db, session_scope
 from app.schemas.match import MatchReport
-from app.services import applications, jobs as job_service, profiles, resumes
+from app.services import applications, profiles, resumes
+from app.services import jobs as job_service
 from app.tailoring.presets import list_presets
 
 server = MCPServer(

@@ -77,7 +77,7 @@ class EvidenceIndex:
 
     @classmethod
     def build(cls, profile: CandidateProfile, achievement_ids: set[str] | None = None,
-              skill_names: set[str] | None = None) -> "EvidenceIndex":
+              skill_names: set[str] | None = None) -> EvidenceIndex:
         tax = get_taxonomy()
         idx = cls()
         for ach, parent in profile.usable_achievements():
@@ -305,7 +305,7 @@ def assess_requirement(req: Requirement, profile: CandidateProfile, idx: Evidenc
         skill_results = [assess_skill(s.canonical, idx) for s in req.skills if tax.category(s.canonical) != "soft"]
         index, ids = sem
         sims = index.query(req.text) if ids else []
-        best_sim, best_id = (max(zip(sims, ids)) if sims else (0.0, None))
+        best_sim, best_id = (max(zip(sims, ids, strict=True)) if sims else (0.0, None))
         if skill_results:
             if req.any_of:
                 best = max(skill_results, key=lambda a: (LEVEL_RANK[a.level], a.score))
@@ -491,9 +491,11 @@ def score_profile(profile: CandidateProfile, job: JobAnalysis, weights: Weights 
     relevance = achievement_relevance(profile, job)
     dims = _dimensions(profile, job, matches, idx, relevance, weights, today, include_presentation=False)
     total_w = sum(d.weight for d in dims) or 1.0
-    total = round(sum(d.points for d in dims) / total_w * 100, 1)
+    points = sum(d.points for d in dims)
+    total = round(points / total_w * 100, 1)
     card = ScoreCard(name="Job Fit", total=total, dimensions=dims,
-                     notes=["Computed from the whole master profile, including unverified claims (flagged).",
+                     notes=[f"{points:.1f} of the {total_w:g} points that apply to a profile, scaled to 100.",
+                            "Computed from the whole master profile, including unverified claims (flagged).",
                             "ATS parsing and clarity are resume properties and are scored on each generated resume instead."])
     mandatory = [m for m in matches if m.category == "mandatory" and m.kind not in ("work_authorization", "clearance")]
     preferred = [m for m in matches if m.category == "preferred"]

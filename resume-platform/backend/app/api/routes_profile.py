@@ -15,8 +15,8 @@ from app.db import get_session
 from app.ingest.extract import extract_document
 from app.ingest.github import best_project_match, fetch_repo
 from app.ingest.resume_parser import parse_resume
-from app.llm.factory import get_provider
 from app.llm.base import LLMNotConfigured
+from app.llm.factory import get_provider
 from app.llm.tasks import suggest_wording
 from app.models import ProfileRevision
 from app.schemas.common import stable_id

@@ -13,7 +13,8 @@ from app import __version__, models
 from app.config import get_settings
 from app.db import Base, get_engine, get_session
 from app.llm.factory import describe as describe_llm
-from app.services import applications, jobs as job_service, profiles, tasks
+from app.services import applications, profiles, tasks
+from app.services import jobs as job_service
 from app.tailoring.presets import list_presets
 from app.validation.adapters.registry import describe_adapters
 from app.validation.ats import pdftotext_available
@@ -79,6 +80,11 @@ def purge(body: PurgeRequest, session: Session = Depends(get_session)):
     for table in reversed(Base.metadata.sorted_tables):
         session.execute(delete(table))
     session.commit()
+    if get_engine().dialect.name == "sqlite":
+        # Deleted rows stay in the database file until it is rebuilt; make the deletion physical.
+        with get_engine().connect().execution_options(isolation_level="AUTOCOMMIT") as conn:
+            conn.exec_driver_sql("VACUUM")
+            conn.exec_driver_sql("PRAGMA wal_checkpoint(TRUNCATE)")
     for d in (s.uploads_dir, s.outputs_dir):
         shutil.rmtree(d, ignore_errors=True)
     s.ensure_dirs()

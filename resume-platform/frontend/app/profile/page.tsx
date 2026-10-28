@@ -1,7 +1,8 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Check, FileUp, GitBranch, Pencil, Plus, Sparkles, Undo2, X } from "lucide-react";
+import { Check, FileUp, GitBranch, Pencil, Plus, Sparkles, Trash2, Undo2, X } from "lucide-react";
 
 import { ErrorState, Loading, PageHeader, SeverityBadge, Spinner, VerificationBadge } from "@/components/common";
 import { FileDrop } from "@/components/file-drop";
@@ -113,7 +114,7 @@ export default function ProfilePage() {
           <TabsTrigger value="personal">Personal & eligibility</TabsTrigger>
           <TabsTrigger value="education">Education</TabsTrigger>
           <TabsTrigger value="evidence">Evidence</TabsTrigger>
-          <TabsTrigger value="history">History</TabsTrigger>
+          <TabsTrigger value="history">History & data</TabsTrigger>
         </TabsList>
         <TabsContent value="issues">
           <IssuesPanel profile={p} issues={openIssues} mutate={mutate} />
@@ -138,8 +139,9 @@ export default function ProfilePage() {
         <TabsContent value="evidence">
           <EvidencePanel profile={p} mutate={mutate} />
         </TabsContent>
-        <TabsContent value="history">
+        <TabsContent value="history" className="space-y-4">
           <HistoryPanel />
+          <DeleteAllData />
         </TabsContent>
       </Tabs>
     </>
@@ -656,5 +658,50 @@ function HistoryPanel() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+const PURGE_PHRASE = "DELETE ALL MY DATA";
+
+function DeleteAllData() {
+  const router = useRouter();
+  const [text, setText] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<ApiError | null>(null);
+
+  const purge = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      await api.post("/system/purge", { confirm: text });
+      router.push("/");
+    } catch (e) {
+      setError(e as ApiError);
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Card className="border-destructive/40">
+      <CardHeader>
+        <CardTitle className="text-base">Delete all my data</CardTitle>
+        <CardDescription>
+          Permanently removes your profile and its revisions, uploaded documents, jobs, match reports, resume versions,
+          generated files and application history from this machine. Download anything you want to keep first.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <Label htmlFor="purge-confirm">
+          Type <span className="font-mono">{PURGE_PHRASE}</span> to confirm
+        </Label>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <Input id="purge-confirm" value={text} onChange={(e) => setText(e.target.value)} autoComplete="off" className="sm:max-w-xs" />
+          <Button variant="destructive" disabled={text !== PURGE_PHRASE || busy} onClick={purge}>
+            {busy ? <Spinner /> : <Trash2 className="size-4" />} Delete everything
+          </Button>
+        </div>
+        <ErrorState error={error} title="Deletion failed" />
+      </CardContent>
+    </Card>
   );
 }

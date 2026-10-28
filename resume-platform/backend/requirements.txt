@@ -13,3 +13,4 @@ pymupdf==2.0
 python-docx==1.2.0
 reportlab==5.1.0
 mcp==2.3.0
+anthropic==2.3.0

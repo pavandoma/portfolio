@@ -68,6 +68,13 @@ NEVER_LIST_DERIVED = {"Stakeholder Management", "Operations Analytics", "Invento
                       "Structured Outputs", "Context Engineering", "Credit Risk Modeling", "Text Classification",
                       "Monitoring", "Distributed Systems", "Experiment Tracking", "Data Engineering"}
 PROPER_CATEGORIES = {"language", "cloud", "database"}
+# Skill families a recruiter reads as neighbours (an analyst posting values ETL and data quality).
+ADJACENT_CATEGORIES = {"data_eng": {"analytics", "database", "cloud"}, "database": {"analytics", "data_eng"},
+                       "analytics": {"data_eng", "database", "ml"}, "ml": {"analytics", "genai"}, "genai": {"ml"},
+                       "cloud": {"data_eng", "genai", "ml"}}
+# When fewer skills than this relate to the posting, a few evidenced neighbours fill out the section.
+THIN_SKILLS = 11
+MAX_ADJACENT_SKILLS = 5
 
 
 def summary_display(canonical: str, written: str) -> str:
@@ -260,6 +267,40 @@ def _display_case(display: str, canonical: str) -> str:
     return display
 
 
+# Where a one-item or surplus skill group goes: the closest family already on the resume.
+GROUP_NEIGHBOURS = {"data_eng": ["analytics", "database", "cloud"], "database": ["data_eng", "analytics", "cloud"],
+                    "analytics": ["data_eng", "ml"], "ml": ["genai", "analytics"], "genai": ["ml"],
+                    "cloud": [], "language": []}
+
+
+def fold_skill_groups(groups: dict[str, list], order: list[str], max_lines: int = 5) -> None:
+    """Fold one-item groups (and anything beyond ``max_lines``) into the closest neighbouring group, in place.
+
+    Groups with no neighbour on the resume end up together on a final "Tools" line.
+    """
+    def fold(cat: str) -> bool:
+        for target in GROUP_NEIGHBOURS.get(cat, []):
+            if target in groups and target != cat:
+                groups[target].extend(groups.pop(cat))
+                order.remove(cat)
+                return True
+        return False
+
+    for cat in list(order):
+        if cat in groups and len(groups[cat]) == 1 and cat != "language" and len(order) > 3:
+            fold(cat)
+    while len(order) > max_lines:
+        movable = [c for c in order if c not in ("language", "tools")]
+        if not movable:
+            break
+        smallest = min(movable, key=lambda c: (len(groups[c]), -order.index(c)))
+        if not fold(smallest):
+            groups.setdefault("tools", []).extend(groups.pop(smallest))
+            order.remove(smallest)
+            if "tools" not in order:
+                order.append("tools")
+
+
 def build_skills(profile: CandidateProfile, job: JobAnalysis, idx: EvidenceIndex,
                  max_items: int = 24) -> tuple[list[SkillLine], list[OmittedItem], list[str]]:
     tax = get_taxonomy()
@@ -282,6 +323,7 @@ def build_skills(profile: CandidateProfile, job: JobAnalysis, idx: EvidenceIndex
                                        "listed": not s.derived_from_bullets,
                                        "evidence": bool(s.evidence_achievement_ids)})
     scored: list[tuple[float, str, str]] = []
+    adjacent: list[tuple[float, str, str]] = []
     omitted: list[OmittedItem] = []
     for name, info in candidates.items():
         best = 0.0
@@ -307,8 +349,15 @@ def build_skills(profile: CandidateProfile, job: JobAnalysis, idx: EvidenceIndex
             cat_weight = max((rs.importance for rs in jd.values() if tax.category(rs.canonical) == cat), default=0.0)
             best = 0.05 * cat_weight if info["listed"] else 0.0
         if best <= 0.02:
-            omitted.append(OmittedItem(item_type="skill", item_id=info["ids"][0], text=info["display"],
-                                       reason="Not relevant to this posting"))
+            neighbours_w = [max((rs.importance for rs in jd.values() if tax.category(rs.canonical) == c), default=0.0)
+                            for c in ADJACENT_CATEGORIES.get(cat, ())]
+            if cat not in ("concept", "business") and (info["listed"] or info["evidence"]) and any(neighbours_w):
+                # Ranked below every skill the posting relates to: evidenced and listed first.
+                weight = (1.0 if info["listed"] and info["evidence"] else 0.8 if info["evidence"] else 0.6)
+                adjacent.append((0.019 * weight * sum(neighbours_w) / 3, name, display))
+            else:
+                omitted.append(OmittedItem(item_type="skill", item_id=info["ids"][0], text=info["display"],
+                                           reason="Not relevant to this posting"))
             continue
         scored.append((best + (0.05 if info["evidence"] else 0.0), name, display))
     scored.sort(key=lambda t: (-t[0], t[1]))
@@ -323,6 +372,12 @@ def build_skills(profile: CandidateProfile, job: JobAnalysis, idx: EvidenceIndex
                                        reason="Covered by a more specific skill already listed"))
             continue
         pruned.append((sc, name, display))
+    adjacent.sort(key=lambda t: (-t[0], t[1]))
+    room = min(MAX_ADJACENT_SKILLS, max(0, THIN_SKILLS - len(pruned)))
+    pruned.extend(adjacent[:room])  # scored below every related skill, so the order holds
+    for _sc, name, display in adjacent[room:]:
+        omitted.append(OmittedItem(item_type="skill", item_id=candidates[name]["ids"][0], text=display,
+                                   reason="Not relevant to this posting"))
     kept, dropped = pruned[:max_items], pruned[max_items:]
     for _sc, name, display in dropped:
         omitted.append(OmittedItem(item_type="skill", item_id=candidates[name]["ids"][0], text=display,
@@ -338,29 +393,7 @@ def build_skills(profile: CandidateProfile, job: JobAnalysis, idx: EvidenceIndex
     if "language" in order and order.index("language") > 0:
         order.remove("language")
         order.insert(0, "language")
-    # Fold one-item groups (and anything beyond five lines) into the closest neighbouring group.
-    neighbours = {"data_eng": ["analytics", "database", "cloud"], "database": ["data_eng", "analytics", "cloud"],
-                  "analytics": ["data_eng", "ml"], "ml": ["genai", "analytics"], "genai": ["ml"],
-                  "cloud": [], "language": []}
-
-    def fold(cat: str) -> bool:
-        for target in neighbours.get(cat, []):
-            if target in groups and target != cat:
-                groups[target].extend(groups.pop(cat))
-                order.remove(cat)
-                return True
-        return False
-
-    for cat in list(order):
-        if cat in groups and len(groups[cat]) == 1 and cat != "language" and len(order) > 3:
-            fold(cat)
-    while len(order) > 5:
-        smallest = min((c for c in order if c != "language"), key=lambda c: (len(groups[c]), -order.index(c)))
-        if not fold(smallest):
-            groups.setdefault("tools", []).extend(groups.pop(smallest))
-            order.remove(smallest)
-            if "tools" not in order:
-                order.append("tools")
+    fold_skill_groups(groups, order)
     lines = []
     for cat in order:
         label = SKILL_GROUP_LABELS.get(cat, "Tools")
@@ -487,7 +520,6 @@ def tailor(profile: CandidateProfile, job: JobAnalysis, report: MatchReport | No
            options: TailorOptions | None = None, *, source_fonts: list[str] | None = None,
            variant: str | None = None) -> TailorResult:
     options = options or TailorOptions()
-    tax = get_taxonomy()
     weights = _job_skill_weights(job)
     relevance = achievement_relevance(profile, job)
     idx = EvidenceIndex.build(profile)
@@ -517,13 +549,14 @@ def tailor(profile: CandidateProfile, job: JobAnalysis, report: MatchReport | No
         for a in ordered[len(keep):]:
             if a.id not in {o.item_id for o in omitted}:
                 omitted.append(OmittedItem(item_type="bullet", item_id=a.id, text=a.text, reason="Space; lower relevance"))
-                if relevance.get(a.id, (0, []))[0] >= 0.12:
-                    c = choose_wording(a, r, weights, options.use_unapproved_wording)
-                    rel, hits = relevance.get(a.id, (0.0, []))
-                    reserve_bullets.append((r.id, ResumeBullet(
-                        id=stable_id("b", a.id, c.variant_id or "orig"), text=c.text, achievement_ids=[a.id],
-                        variant_id=c.variant_id, origin=c.origin, approved=c.approved, relevance=rel,  # type: ignore[arg-type]
-                        matched_requirements=hits, flags=c.flags)))
+            # Kept in reserve: the fitter restores it, most relevant first, only into free space
+            # (a one-page resume with a blank quarter reads thin).
+            c = choose_wording(a, r, weights, options.use_unapproved_wording)
+            rel, hits = relevance.get(a.id, (0.0, []))
+            reserve_bullets.append((r.id, ResumeBullet(
+                id=stable_id("b", a.id, c.variant_id or "orig"), text=c.text, achievement_ids=[a.id],
+                variant_id=c.variant_id, origin=c.origin, approved=c.approved, relevance=rel,  # type: ignore[arg-type]
+                matched_requirements=hits, flags=c.flags)))
         bullets = []
         for a in keep:
             c = choose_wording(a, r, weights, options.use_unapproved_wording)
@@ -575,8 +608,7 @@ def tailor(profile: CandidateProfile, job: JobAnalysis, report: MatchReport | No
             omitted.append(OmittedItem(item_type="project", item_id=p.id, text=p.name, reason="Less relevant to this posting"))
             change_log.append(ChangeLogEntry(kind="project_removed", target=p.name, before=p.name, after=None,
                                              reason="Less relevant to this posting than the projects kept."))
-            if score >= 0.05:
-                reserve_projects.append(project_entry(p, 2))
+            reserve_projects.append(project_entry(p, 2))
             continue
         projects.append(project_entry(p, options.max_bullets_per_project))
         used_projects.append(p)

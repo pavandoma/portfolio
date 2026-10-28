@@ -13,7 +13,6 @@ from app.schemas.match import MatchReport
 from app.schemas.profile import CandidateProfile
 from app.schemas.resume import TailoredResume
 from app.schemas.validation import ATSReport, IntegrityReport, QAIssue, QAReport
-from app.tailoring.diff import resume_plain_text
 from app.tailoring.style import IRREGULAR_PAST, STRONG_VERBS, WEAK_OPENERS, ai_tells, first_word, keyword_repetition
 
 COMMON_ACRONYMS = {"AI", "ML", "SQL", "AWS", "ETL", "ELT", "KPI", "KPIS", "CTE", "CTES", "API", "APIS", "NLP", "LLM", "LLMS",
@@ -92,7 +91,6 @@ def check_quality(profile: CandidateProfile, resume: TailoredResume, job: JobAna
             issues.append(QAIssue(category="style", code="summary_repeats_bullet", severity="info", location="summary",
                                   message="The summary repeats a bullet word for word.",
                                   suggestion="Use a shorter phrasing of the result in the summary."))
-    plain = resume_plain_text(resume)
     known_forms = {f.upper() for n in tax.nodes.values() for f in [n.name, *n.aliases]}
     acronyms = set(re.findall(r"\b[A-Z][A-Z0-9]{1,6}s?\b", " ".join(texts) + " " + summary_text))
     unknown = sorted(a for a in acronyms if a.upper() not in COMMON_ACRONYMS and a.upper() not in known_forms
@@ -111,7 +109,7 @@ def check_quality(profile: CandidateProfile, resume: TailoredResume, job: JobAna
         issues.append(QAIssue(category="content", code="few_measurable_results", severity="info", location="resume",
                               message=f"{with_numbers} of {len(texts)} bullets include a number.",
                               suggestion="Add real numbers to the profile where you have them; never estimate."))
-    for where, b, parent in bullets:
+    for where, b, _parent in bullets:
         if not re.search(r"\d", b.text) and not OUTCOME_WORDS.search(b.text):
             issues.append(QAIssue(category="content", code="missing_outcome", severity="info", location=where,
                                   message=f"No outcome stated: '{b.text[:70]}...'"))

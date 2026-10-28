@@ -5,16 +5,15 @@ from __future__ import annotations
 import pytest
 
 from app.config import get_settings
-from app.core.security import UploadError, assert_public_url, detect_injection, redact, validate_upload, UnsafeURLError
+from app.core.security import UnsafeURLError, UploadError, assert_public_url, detect_injection, redact, validate_upload
 from app.core.taxonomy import get_taxonomy
 from app.ingest.extract import extract_docx, extract_pdf
-from app.ingest.profile_builder import build_profile
 from app.ingest.resume_parser import parse_resume
 from app.jobs.jd_parser import analyse_job
 from app.matching.engine import score_profile
 from app.schemas.match import Weights
-from tests.conftest import TODAY, job_text, needs_real_resume
 from tests import synthetic_resume as S
+from tests.conftest import TODAY, job_text, needs_real_resume
 
 
 # --------------------------------------------------------------------------- taxonomy
@@ -204,7 +203,7 @@ def test_upload_validation_rejects_bad_files(synthetic_pdf):
 
 
 def test_malformed_pdf_does_not_crash_parser():
-    with pytest.raises(Exception):
+    with pytest.raises(RuntimeError):  # pymupdf.FileDataError
         extract_pdf(b"%PDF-1.4 truncated")
 
 
