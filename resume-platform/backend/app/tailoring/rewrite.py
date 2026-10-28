@@ -48,7 +48,9 @@ def rule_cleanup(text: str, *, academic: bool = False) -> str:
         if past:
             out = past.capitalize() + (" " + first[1] if len(first) > 1 else "")
     if academic:
+        # Only ever removes claims: "production-scale", "enterprise" and "launched" imply real users.
         out = _ACADEMIC_PRODUCTION_ADJ.sub("", out)
+        out = re.sub(r"\benterprise\s+", "", out, flags=re.IGNORECASE)
         out = re.sub(r"^Launched\b", "Built", out)
     out = re.sub(r"\s+([,.;:])", r"\1", out)
     out = re.sub(r",\s*,", ",", out)

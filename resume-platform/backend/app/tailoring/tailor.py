@@ -239,7 +239,11 @@ def choose_wording(ach: Achievement, parent: Role | Project, weights: dict[str, 
         options.append(Choice(v.text, v.id, v.origin, v.approved,
                               _text_relevance(v.text, weights) * 0.2 + q * 1.5 + bonus + emphasis, flags))
     options.sort(key=lambda c: (-round(c.score, 6), c.variant_id or ""))
-    return options[0]
+    best = options[0]
+    # Consistent end punctuation is formatting, not rewording.
+    if best.text and not best.text.rstrip().endswith((".", "!", "?")):
+        best = Choice(best.text.rstrip() + ".", best.variant_id, best.origin, best.approved, best.score, best.flags)
+    return best
 
 
 # --------------------------------------------------------------------------- skills
@@ -656,7 +660,7 @@ def tailor(profile: CandidateProfile, job: JobAnalysis, report: MatchReport | No
 def _log_bullets(log: list[ChangeLogEntry], bullets: list[ResumeBullet], source: list[Achievement], where: str) -> None:
     for pos, b in enumerate(bullets):
         ach = next(a for a in source if a.id == b.achievement_ids[0])
-        if b.text.strip() != ach.original_text.strip():
+        if b.text.strip().rstrip(".") != ach.original_text.strip().rstrip("."):
             log.append(ChangeLogEntry(
                 kind="bullet_reworded", target=b.id, before=ach.original_text, after=b.text,
                 reason=f"[{where}] Wording from a {b.origin.replace('_', ' ')} variant that passed the fact check"

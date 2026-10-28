@@ -318,11 +318,12 @@ def parse_resume(doc: ExtractedDocument) -> ParsedResume:
     result.sections = sections
     header_lines = body[: first_heading if first_heading is not None else min(4, len(body))]
     _parse_header(header_lines, doc, result)
+    header_summary = result.summary
 
     for sec in sections:
         if sec.key == "summary":
             text = collapse_ws(" ".join(ln.text for ln in sec.lines))
-            result.summary = text or None
+            result.summary = text or header_summary
         elif sec.key == "skills":
             result.skills.extend(parse_skills(sec.lines))
         elif sec.key in ("experience", "projects"):
@@ -448,6 +449,7 @@ def _parse_header(lines: list[DocLine], doc: ExtractedDocument, result: ParsedRe
     name_line = max(lines[:3], key=lambda ln: ln.size)
     result.name = collapse_ws(name_line.text)
     contact_bits: list[str] = []
+    summary_lines: list[str] = []
     for line in lines:
         if line is name_line:
             continue
@@ -463,10 +465,13 @@ def _parse_header(lines: list[DocLine], doc: ExtractedDocument, result: ParsedRe
                 chunk = chunk.strip()
                 if LOCATION_RE.match(chunk) and not EMAIL_RE.search(chunk) and result.location is None:
                     result.location = chunk
-        elif result.headline is None and len(text) < 80 and not find_date_range(text):
+        elif result.headline is None and len(text) < 80 and not find_date_range(text) and len(text.split()) <= 8:
             result.headline = text.strip()
         elif LOCATION_RE.match(text.strip()):
             result.location = text.strip()
+        elif len(text.split()) >= 6:
+            # A summary paragraph without its own heading (as in the common template layout).
+            summary_lines.append(text.strip())
     for lk in doc.links:
         uri = lk["uri"]
         if uri.startswith("mailto:"):
@@ -479,3 +484,5 @@ def _parse_header(lines: list[DocLine], doc: ExtractedDocument, result: ParsedRe
             if rect is None or any(abs(rect[1] - ln.y) < 14 for ln in lines):
                 result.urls.append(uri)
     result.contact_line = " | ".join(contact_bits)
+    if summary_lines and not result.summary:
+        result.summary = collapse_ws(" ".join(summary_lines))

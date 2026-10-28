@@ -619,3 +619,42 @@ def _recommendations(matches: list[RequirementMatch], gates: list[GateResult], i
 
 def requirement_key(company: str | None, title: str | None, location: str | None) -> str:
     return "|".join(normalize_key(x or "") for x in (company, title, location))
+
+
+def score_resume_alignment(profile: CandidateProfile, job: JobAnalysis, resume, *, ats_score: float, qa_score: float,
+                           weights: Weights | None = None, today: date | None = None) -> ScoreCard:
+    """How well a specific resume communicates the candidate's fit (only what is on the page counts)."""
+    from app.tailoring.diff import resume_plain_text
+
+    weights = weights or Weights()
+    tax = get_taxonomy()
+    on_page = {i for b in resume.all_bullets() for i in b.achievement_ids}
+    listed = set()
+    for line in resume.skills:
+        for item in line.items:
+            canon = tax.canonical(item)
+            if canon:
+                listed.add(canon)
+            for sid in line.sources.get(item, []):
+                s = next((x for x in profile.skills if x.id == sid), None)
+                if s:
+                    listed.add(s.name)
+    idx = EvidenceIndex.build(profile, achievement_ids=on_page, skill_names=listed)
+    idx.certified = {k: v for k, v in EvidenceIndex.build(profile).certified.items()
+                     if any(c.certification_id == v for c in resume.certifications)}
+    sem = _semantic_index(profile, idx)
+    matches = [assess_requirement(r, profile, idx, sem, today) for r in job.requirements if r.category != "context"]
+    relevance = {k: v for k, v in achievement_relevance(profile, job).items() if k in on_page}
+    dims = _dimensions(profile, job, matches, idx, relevance, weights, today, include_presentation=True,
+                       keyword_text=resume_plain_text(resume))
+    dims.append(DimensionScore(key="ats", label="ATS parsing and formatting", weight=weights.ats,
+                               score=round(ats_score / 100, 4), points=round(weights.ats * ats_score / 100, 2),
+                               explanation="Field-level parse-back of the rendered files (lowest of the extractors run)."))
+    dims.append(DimensionScore(key="clarity", label="Clarity and conciseness", weight=weights.clarity,
+                               score=round(qa_score / 100, 4), points=round(weights.clarity * qa_score / 100, 2),
+                               explanation="Style and content QA: bullet length, tense, filler, repetition."))
+    total_w = sum(d.weight for d in dims) or 1.0
+    return ScoreCard(name="Resume Alignment", total=round(sum(d.points for d in dims) / total_w * 100, 1),
+                     dimensions=dims,
+                     notes=["Only content that appears on this resume counts.",
+                            "Not an employer's ATS score and not a prediction of interview chances."])
