@@ -28,6 +28,15 @@ Scores are heuristics computed by this tool. They are never presented as an empl
 
 ## Run it locally (no Docker)
 
+**Windows, one command** (PowerShell, in `resume-platform`): installs everything on the first run, starts
+both servers in their own windows and opens the app. Not yet tested on a Windows machine.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\start.ps1
+```
+
+**Mac / Linux, step by step:**
+
 Requirements: Python 3.11+ (tested with 3.13) and Node.js 20+ (tested with 22). Optional but recommended:
 `poppler-utils` (an independent `pdftotext` parse-back check) and the Carlito / Liberation fonts
 (`fonts-crosextra-carlito fonts-liberation` on Debian/Ubuntu). Without those fonts, PDFs fall back to the
