@@ -152,7 +152,7 @@ Every change from the master profile, with the reason and the evidence it relies
 - Evidence: edu-377a661f32, role-ee11645053, proj-63256c26ed, ach-1d838cbd3c
 
 ### Bullet Reworded **(needs approval)**
-- Reason: [Data Engineer - Lead, University at Buffalo] Wording from a assistant variant that passed the fact check; waiting for your approval
+- Reason: [Data Engineer - Lead, University at Buffalo] Wording from an assistant-written variant that passed the fact check; waiting for your approval
 - Before: Engineered production resource allocation pipeline leveraging SQL window functions and time-series decomposition, collaborating with stakeholders to validate business logic demonstrated end-to-end ownership of data flow from extraction to actionable insights for leadership.
 - After: Built a production resource allocation pipeline with SQL window functions and time-series decomposition, working with stakeholders to validate the business logic from extraction to the insights shared with leadership.
 - Evidence: ach-8162f77025
@@ -164,13 +164,13 @@ Every change from the master profile, with the reason and the evidence it relies
 - Evidence: ach-8162f77025
 
 ### Bullet Reworded **(needs approval)**
-- Reason: [Data Engineer - Lead, University at Buffalo] Wording from a assistant variant that passed the fact check; waiting for your approval
+- Reason: [Data Engineer - Lead, University at Buffalo] Wording from an assistant-written variant that passed the fact check; waiting for your approval
 - Before: Reduced query runtime by 40% by developing real-time KPI dashboards using advanced SQL (window functions, CTEs, aggregations) and optimizing queries.
 - After: Built real-time KPI dashboards in advanced SQL (window functions, CTEs, aggregations) and optimized the queries behind them, cutting query runtime by 40%.
 - Evidence: ach-94345d17bb
 
 ### Bullet Reworded **(needs approval)**
-- Reason: [Data Engineer - Lead, University at Buffalo] Wording from a assistant variant that passed the fact check; waiting for your approval
+- Reason: [Data Engineer - Lead, University at Buffalo] Wording from an assistant-written variant that passed the fact check; waiting for your approval
 - Before: Collaborated with operations team to design & maintain normalized database schema (people, inventory, transactions), implementing validation rules and data quality checks that ensured 100% transactional integrity-foundation for reliable reporting and decision-making across the organization.
 - After: Designed and maintained a normalized schema for people, inventory and transactions with the operations team, using validation rules and data quality checks to keep transactional integrity at 100% for reliable reporting.
 - Evidence: ach-d3adcdb63e
@@ -182,24 +182,49 @@ Every change from the master profile, with the reason and the evidence it relies
 - Evidence: ach-d3adcdb63e
 
 ### Bullet Reworded **(needs approval)**
-- Reason: [Data Engineer - Lead, University at Buffalo] Wording from a assistant variant that passed the fact check; waiting for your approval
+- Reason: [Data Engineer - Lead, University at Buffalo] Wording from an assistant-written variant that passed the fact check; waiting for your approval
 - Before: Optimized ETL pipeline performance by real-time operational decision-making that improved asset utilization efficiency by 25%, through SQL query refactoring and schema redesign enabling directly supporting business scalability goals.
 - After: Improved ETL pipeline performance through SQL query refactoring and schema redesign, supporting real-time operational decisions that raised asset utilization efficiency by 25%.
 - Evidence: ach-1d838cbd3c
 
 ### Bullet Reworded **(needs approval)**
-- Reason: [Credit Scoring & Customer Segmentation] Wording from a assistant variant that passed the fact check; waiting for your approval
+- Reason: [Data Engineer - Lead, University at Buffalo] Wording from an assistant-written variant that passed the fact check; waiting for your approval
+- Before: Standardized & documented ETL pipelines for stock tracking/allocation, establishing data quality gates and error-handling protocols reduced data ingestion errors by 30%, shortened refresh cycles, and created runbooks enabling team to maintain system reliability and onboard new engineers faster.
+- After: Standardized and documented ETL pipelines for stock tracking and allocation, adding data quality gates and error handling that cut data ingestion errors by 30%; wrote runbooks that helped onboard new engineers faster.
+- Evidence: ach-9c8363427d
+
+### Bullet Reworded **(needs approval)**
+- Reason: [Credit Scoring & Customer Segmentation] Wording from an assistant-written variant that passed the fact check; waiting for your approval
 - Before: Developed a credit risk scoring system collaborating cross-functionally to define feature engineering strategy
 - After: Developed a credit risk scoring model and defined its feature engineering strategy with a cross-functional team.
 - Evidence: ach-57af7c19a7
 
 ### Bullet Reworded **(needs approval)**
-- Reason: [Credit Scoring & Customer Segmentation] Wording from a assistant variant that passed the fact check; waiting for your approval
+- Reason: [Credit Scoring & Customer Segmentation] Wording from an assistant-written variant that passed the fact check; waiting for your approval
 - Before: Validated business logic demonstrated understanding of data quality trade-offs and working with senior engineers to compare 5 model approaches via MLflow experiment tracking.
 - After: Compared 5 model approaches in MLflow with senior engineers and checked the business logic against data quality trade-offs.
 - Evidence: ach-d99d766d62
 
-### Bullet Removed
-- Reason: Not relevant to this posting
-- Before: Standardized & documented ETL pipelines for stock tracking/allocation, establishing data quality gates and error-handling protocols reduced data ingestion errors by 30%, shortened refresh cycles, and created runbooks enabling team to maintain system reliability and onboard new engineers faster.
-- Evidence: ach-9c8363427d
+### Bullet Reworded **(needs approval)**
+- Reason: [Retrieval-Augmented Conversational AI Systems] Wording from an assistant-written variant that passed the fact check; waiting for your approval
+- Before: Designed production-scale RAG system, working with ML engineers to validate semantic relevance (97.5% accuracy) containerized deployment on AWS ECS with monitoring infrastructure, demonstrating end-to-end ownership of data pipelines supporting enterprise AI workflows.
+- After: Designed a retrieval-augmented generation (RAG) system and validated its semantic relevance at 97.5% accuracy with ML engineers; containerized it on AWS ECS with monitoring.
+- Evidence: ach-156262d85b
+
+### Bullet Reworded **(needs approval)**
+- Reason: [Retrieval-Augmented Conversational AI Systems] Wording from an assistant-written variant that passed the fact check; waiting for your approval
+- Before: Implemented context engineering, memory management, and structured output validation to ensure reliable, context-aware responses across enterprise workflows.
+- After: Implemented context engineering, conversation memory and structured output validation so the assistant gave consistent, context-aware answers.
+- Evidence: ach-f5ee053808
+
+### Bullet Reworded **(needs approval)**
+- Reason: [Consumer Complaint Classification] Wording from an assistant-written variant that passed the fact check; waiting for your approval
+- Before: Launched an intent classifier for banking customer queries across 77 intent classes, achieving 89.5% accuracy.
+- After: Built an intent classifier for banking customer queries covering 77 intent classes, reaching 89.5% accuracy.
+- Evidence: ach-5d02bf30b5
+
+### Bullet Reworded **(needs approval)**
+- Reason: [Consumer Complaint Classification] Wording from an assistant-written variant that passed the fact check; waiting for your approval
+- Before: Implemented a confidence-threshold pipeline allowing 49.6% of predictions to skip manual review while maintaining 99.8% accuracy on auto-approved cases.
+- After: Added a confidence threshold that let 49.6% of predictions skip manual review while keeping 99.8% accuracy on the auto-approved cases.
+- Evidence: ach-cbdba74a9e

@@ -716,13 +716,17 @@ def _log_entries(log: list[ChangeLogEntry], profile: CandidateProfile, experienc
         _log_bullets(log, pe.bullets, proj.achievements, pe.name)
 
 
+VARIANT_SOURCE = {"assistant": "an assistant-written variant", "llm": "an LLM-suggested variant",
+                  "rule_cleanup": "a rule-based cleanup", "user": "your own wording", "original": "your original wording"}
+
+
 def _log_bullets(log: list[ChangeLogEntry], bullets: list[ResumeBullet], source: list[Achievement], where: str) -> None:
     for pos, b in enumerate(bullets):
         ach = next(a for a in source if a.id == b.achievement_ids[0])
         if b.text.strip().rstrip(".") != ach.original_text.strip().rstrip("."):
             log.append(ChangeLogEntry(
                 kind="bullet_reworded", target=b.id, before=ach.original_text, after=b.text,
-                reason=f"[{where}] Wording from a {b.origin.replace('_', ' ')} variant that passed the fact check"
+                reason=f"[{where}] Wording from {VARIANT_SOURCE.get(b.origin, 'a ' + b.origin)} that passed the fact check"
                        + ("" if b.approved else "; waiting for your approval"),
                 evidence_ids=b.achievement_ids, requires_approval=not b.approved))
         orig_pos = source.index(ach)

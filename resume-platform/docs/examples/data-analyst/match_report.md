@@ -117,4 +117,4 @@ Reported separately; never folded into a score.
 - Python, Pandas: listed as a skill but not shown in any bullet. If you have used it, add one concrete example to your profile (what you built, with what result).
 - 8 achievements contain unverified numbers. Confirm them so they can be used with confidence.
 
-<sub>Scoring version match-1.0; input hash `dd7b8d2b9ab6f283`. Identical inputs always produce identical scores.</sub>
+<sub>Scoring version match-1.0; input hash `23c8462a3be27826`. Identical inputs always produce identical scores.</sub>
