@@ -288,7 +288,7 @@ def review_issues(profile: CandidateProfile, *, today: date | None = None) -> li
         where = parent.name if isinstance(parent, Project) else f"{parent.title}, {parent.organization}"
         issues.append(ProfileIssue(
             id=stable_id("iss", ach.id), kind="needs_verification", target_id=ach.id,
-            message=f"[{where}] Confirm: " + "; ".join(f.message for f in serious),
+            message=f"[{where}] Please confirm: " + " ".join(f.message for f in serious),
             severity="critical" if any(f.severity == "critical" for f in serious) else "warning",
             options=["verified", "user_corrected", "rejected"], field=",".join(kinds)))
     for skill in profile.skills:

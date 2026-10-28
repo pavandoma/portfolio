@@ -373,6 +373,13 @@ def assess_requirement(req: Requirement, profile: CandidateProfile, idx: Evidenc
                                              excerpt=idx.achievements[dom_hit[0]][0].text[:160],
                                              reason="Mentions related domain context")]
                     explanation = "Domain appears in your project or work context."
+    seen_targets: set[tuple[str, str]] = set()
+    unique_evidence = []
+    for e in evidence:
+        if (e.target_type, e.target_id) not in seen_targets:
+            seen_targets.add((e.target_type, e.target_id))
+            unique_evidence.append(e)
+    evidence = unique_evidence
     return RequirementMatch(
         requirement_id=req.id, requirement_text=req.text, category=req.category, kind=req.kind,
         importance=req.importance, level=level, level_label=EVIDENCE_LEVEL_LABELS[level], score=round(score, 4),
