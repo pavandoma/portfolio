@@ -1,0 +1,42 @@
+{
+  "_comment": [
+    "Optional external validators, loaded when RIP_MCP_CONFIG points at a copy of this file.",
+    "Nothing here is enabled by default. Each entry sends resume text to a third-party service only when",
+    "allow_resume_data is true AND RIP_ALLOW_EXTERNAL_DATA_SHARING=true (local_only tools are exempt).",
+    "HireLayer's MCP server was verified to exist (official, MIT, npm hirelayer-mcp, maintained) but has NOT",
+    "been connected or tested from this project: it needs your own API key. Run `tools/list` against it and",
+    "confirm the argument names of score_resumes before setting enabled=true. By default HireLayer stores",
+    "parsed resumes in your account (Paris, France); pass do_not_store_data if you enable it."
+  ],
+  "servers": [
+    {
+      "name": "hirelayer",
+      "category": "matcher",
+      "transport": "stdio",
+      "command": "npx",
+      "args": ["-y", "hirelayer-mcp"],
+      "env": {"HIRELAYER_API_KEY": "${HIRELAYER_API_KEY}"},
+      "tool": "score_resumes",
+      "arguments": {"job_text": "{job_text}", "resumes": ["{resume_text}"], "do_not_store_data": true},
+      "score_path": "scores.0.score",
+      "allow_resume_data": false,
+      "local_only": false,
+      "enabled": false,
+      "notes": "Score is 0-1 from HireLayer's own model, shown as-is; never mixed into this tool's scores."
+    },
+    {
+      "name": "local-test-parser",
+      "category": "parser",
+      "transport": "stdio",
+      "command": "python",
+      "args": ["tests/fixtures/mcp/fake_resume_parser_server.py"],
+      "tool": "parse_resume",
+      "arguments": {"resume_text": "{resume_text}"},
+      "score_path": "score",
+      "allow_resume_data": true,
+      "local_only": true,
+      "enabled": false,
+      "notes": "Test fixture only (runs on this machine). Useful to see the adapter flow end to end."
+    }
+  ]
+}

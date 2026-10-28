@@ -318,6 +318,15 @@ def set_variant_approval(session: Session, achievement_id: str, variant_id: str,
     return rev, data
 
 
+def add_issues(session: Session, issues: list, reason: str) -> tuple[ProfileRevision, CandidateProfile]:
+    profile, _rev, data = current(session)
+    known = {i.id for i in data.issues}
+    data.issues.extend(i for i in issues if i.id not in known)
+    rev = _new_revision(session, profile, data, reason)
+    audit(session, "profile", profile.id, "issues_added", {"count": len(issues), "reason": reason})
+    return rev, data
+
+
 def add_evidence(session: Session, evidence: Evidence) -> tuple[ProfileRevision, CandidateProfile]:
     profile, _rev, data = current(session)
     data.evidence = [e for e in data.evidence if e.id != evidence.id] + [evidence]
