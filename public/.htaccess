@@ -3,6 +3,10 @@
 
 Options -Indexes
 
+# Serve the exported page first; Hostinger's placeholder default.php may
+# still sit in the web root.
+DirectoryIndex index.html index.php
+
 # Short address for the agent (MCP) endpoint: /mcp runs api/mcp.php.
 # An internal rewrite, not a redirect, so POST bodies arrive intact.
 <IfModule mod_rewrite.c>
