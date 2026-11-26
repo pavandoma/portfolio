@@ -12,6 +12,16 @@ DirectoryIndex index.html index.php
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteRule ^mcp/?$ api/mcp.php [L]
+
+  # Addresses from the old WordPress site that search engines still list:
+  # send them, permanently, to the matching part of the new home page.
+  # (Not /home/: browsers that remember WordPress's old "/" -> "/home/"
+  # redirect would loop; /home/ serves the home page instead.)
+  RewriteRule ^about/?$ /#about [R=301,L,NE]
+  RewriteRule ^(projects|project)(/.*)?$ /#projects [R=301,L,NE]
+  RewriteRule ^contact/?$ /#contact [R=301,L,NE]
+  RewriteRule ^blog/?$ /#blogs [R=301,L,NE]
+  RewriteRule ^(hello-world|sample-page|shop|cart|checkout|my-account|privacy-policy|category|tag|author|feed|comments|wp-admin|wp-login\.php|wp-content|wp-includes|xmlrpc\.php)(/.*)?$ / [R=301,L]
 </IfModule>
 
 # Next.js writes its not-found page to /404.html.

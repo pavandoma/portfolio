@@ -16,6 +16,32 @@ const geistMono = Geist_Mono({
 });
 
 const TITLE = `${profile.name} — ${profile.title}`;
+const SITE_NAME = "voiyu";
+
+/**
+ * Structured data: the site's name (Google shows it above the result) and
+ * the person it belongs to. Built only from the public profile.
+ */
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      name: SITE_NAME,
+      alternateName: profile.name,
+      url: `${SITE_URL}/`,
+    },
+    {
+      "@type": "Person",
+      "@id": `${SITE_URL}/#person`,
+      name: profile.name,
+      jobTitle: profile.title,
+      url: `${SITE_URL}/`,
+      sameAs: profile.links.filter((l) => l.href.startsWith("http")).map((l) => l.href),
+    },
+  ],
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -36,7 +62,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "/",
-    siteName: profile.name,
+    siteName: SITE_NAME,
     title: TITLE,
     description: profile.tagline,
     locale: "en_US",
@@ -72,6 +98,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </noscript>
       </head>
       <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>
