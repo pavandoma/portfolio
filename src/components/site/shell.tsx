@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Nunito, Poppins } from "next/font/google";
-import { PrototypeNav } from "./nav";
+import { SiteNav } from "./nav";
 
 // Poppins for headings, Nunito for everything else.
 const poppins = Poppins({
@@ -29,13 +29,13 @@ export const githubIcon = (className = "h-4 w-4") => (
 );
 
 /**
- * Everything the prototype pages share: the fonts, the star field pinned
+ * Everything the site's pages share: the fonts, the star field pinned
  * behind the page, and the header.
  *
  * `base` prefixes the header's section links, so on a blog post they point
  * back to the home page's sections; `current` is the link highlighted first.
  */
-export function PrototypeShell({
+export function SiteShell({
   children,
   base = "",
   current,
@@ -66,7 +66,7 @@ export function PrototypeShell({
         ))}
       </div>
 
-      <PrototypeNav base={base} current={current} />
+      <SiteNav base={base} current={current} />
       {children}
     </div>
   );

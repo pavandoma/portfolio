@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
-import { cinematic } from "@/content/cinematic";
 import { profile } from "@/content/profile";
+import { displayName } from "@/content/site";
 
 // Static export: rendered once at build into /opengraph-image.png.
 export const dynamic = "force-static";
@@ -10,8 +10,8 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 /**
- * The share card. Same register as the site: black ground, tracked mono
- * label, the name large and light, one bone-coloured rule.
+ * The share card, in the site's look: black ground, the name large, one green
+ * rule, and the hero line.
  */
 export default function OpenGraphImage() {
   return new ImageResponse(
@@ -38,7 +38,7 @@ export default function OpenGraphImage() {
             color: "#8a8f98",
           }}
         >
-          {profile.title} · {profile.location}
+          {profile.title}
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -46,13 +46,12 @@ export default function OpenGraphImage() {
             style={{
               display: "flex",
               fontSize: 132,
-              fontWeight: 300,
+              fontWeight: 400,
               letterSpacing: "-0.04em",
               lineHeight: 0.95,
-              textTransform: "uppercase",
             }}
           >
-            {cinematic.hero.name}
+            {displayName}
           </div>
           <div
             style={{
@@ -60,7 +59,7 @@ export default function OpenGraphImage() {
               marginTop: 40,
               width: 160,
               height: 3,
-              background: "#d8cfc0",
+              background: "#34d399",
             }}
           />
           <div
@@ -73,7 +72,7 @@ export default function OpenGraphImage() {
               lineHeight: 1.35,
             }}
           >
-            {profile.tagline}
+            Building LLM systems that earn trust
           </div>
         </div>
       </div>

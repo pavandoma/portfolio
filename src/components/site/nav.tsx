@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from "react";
-import { useLenis } from "@/components/cinematic/smooth-scroll";
+import { useLenis } from "@/components/site/smooth-scroll";
 
 const links = [
   { href: "#home", label: "Home" },
@@ -31,11 +31,11 @@ const solidIfAsked =
  * between links to show the section in view. On small screens the links move
  * into a menu that grows out of its button and shrinks back into it.
  */
-export function PrototypeNav({
+export function SiteNav({
   base = "",
   current = "#home",
 }: {
-  /** Prefix for section links, e.g. "/prototype/" on a blog post. */
+  /** Prefix for section links, e.g. "/" on a blog post. */
   base?: string;
   /** Link highlighted before any section is observed. */
   current?: string;

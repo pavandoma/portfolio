@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { githubIcon, PrototypeShell } from "@/components/prototype/shell";
+import { githubIcon, SiteShell } from "@/components/site/shell";
 import { formatDate, postBySlug, posts, readingMinutes } from "@/content/blog";
-import { displayName } from "@/content/prototype";
+import { displayName } from "@/content/site";
 
 export const dynamicParams = false;
 
@@ -41,7 +41,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const others = posts.filter((p) => p.slug !== post.slug);
 
   return (
-    <PrototypeShell base="/" current="#blogs">
+    <SiteShell base="/" current="#blogs">
       <main className="relative px-4 pb-16 pt-28 md:px-6">
         <article className="mx-auto max-w-3xl rounded-[2rem] border border-white/10 bg-gray-950/80 px-6 py-12 md:px-14 md:py-16">
           <Link
@@ -118,6 +118,6 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           </div>
         </section>
       </main>
-    </PrototypeShell>
+    </SiteShell>
   );
 }

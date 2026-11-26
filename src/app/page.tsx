@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Badges } from "@/components/prototype/badges";
-import { Capabilities } from "@/components/prototype/capabilities";
-import { AgentConnect } from "@/components/prototype/agent-connect";
-import { ContactForm } from "@/components/prototype/contact-form";
-import { EyeCard } from "@/components/prototype/eye-card";
-import { Reveal } from "@/components/prototype/reveal";
-import { SectionHead } from "@/components/prototype/section-head";
-import { githubIcon, PrototypeShell } from "@/components/prototype/shell";
+import { Badges } from "@/components/site/badges";
+import { Capabilities } from "@/components/site/capabilities";
+import { AgentConnect } from "@/components/site/agent-connect";
+import { ContactForm } from "@/components/site/contact-form";
+import { EyeCard } from "@/components/site/eye-card";
+import { Reveal } from "@/components/site/reveal";
+import { SectionHead } from "@/components/site/section-head";
+import { githubIcon, SiteShell } from "@/components/site/shell";
 import { formatDate, posts, readingMinutes } from "@/content/blog";
 import { profile, skills, stats } from "@/content/profile";
 import {
@@ -18,7 +18,7 @@ import {
   linkedin,
   mcpUrl,
   projects,
-} from "@/content/prototype";
+} from "@/content/site";
 
 // Title, description and social cards come from the root layout.
 export const metadata: Metadata = {
@@ -52,7 +52,7 @@ export default function HomePage() {
   const firstName = displayName.split(" ")[0];
 
   return (
-    <PrototypeShell>
+    <SiteShell>
       <main className="relative">
         {/* ── Hero ─────────────────────────────────────────── */}
         <section
@@ -370,6 +370,6 @@ export default function HomePage() {
       <footer className="relative border-t border-white/5 px-6 py-10 text-center text-sm text-gray-400">
         © {new Date().getFullYear()} {displayName}. Built by {firstName} with Next.js and Tailwind CSS.
       </footer>
-    </PrototypeShell>
+    </SiteShell>
   );
 }

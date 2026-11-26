@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { SmoothScroll } from "@/components/cinematic/smooth-scroll";
+import { SmoothScroll } from "@/components/site/smooth-scroll";
 import { profile } from "@/content/profile";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";

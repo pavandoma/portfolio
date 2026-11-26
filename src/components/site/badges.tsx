@@ -1,5 +1,5 @@
 import { certifications } from "@/content/profile";
-import { education } from "@/content/prototype";
+import { education } from "@/content/site";
 
 type Badge = { title: string; issuer: string; mark: string };
 

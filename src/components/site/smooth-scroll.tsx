@@ -2,7 +2,6 @@
 
 import Lenis from "lenis";
 import { useEffect, useSyncExternalStore, type ReactNode } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
 import {
   getLenisInstance,
   getServerLenisInstance,
@@ -20,12 +19,8 @@ export function useLenis() {
 }
 
 /**
- * Lenis smooth scroll wired into GSAP's ticker.
- *
- * Lenis scrolls the real window (no transform hijack), so ScrollTrigger works
- * unmodified — it only needs to be told when Lenis moves. Driving Lenis from
- * gsap.ticker keeps both on one clock; `lagSmoothing(0)` stops GSAP from
- * pausing after a dropped frame, which would visibly desync the two.
+ * Lenis smooth scroll. It scrolls the real window (no transform hijack) and
+ * runs on its own requestAnimationFrame loop (`autoRaf`).
  *
  * Under `prefers-reduced-motion` the page uses native scrolling: no easing,
  * no inertia, nothing between the wheel and the viewport.
@@ -39,26 +34,17 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       lerp: 0.09,
       wheelMultiplier: 0.9,
       smoothWheel: true,
+      autoRaf: true,
     });
-
-    instance.on("scroll", ScrollTrigger.update);
-    const tick = (time: number) => instance.raf(time * 1000);
-    gsap.ticker.add(tick);
-    gsap.ticker.lagSmoothing(0);
     setLenisInstance(instance);
 
     if (process.env.NODE_ENV !== "production") {
-      // Exposed so scroll choreography can be inspected from the console.
-      Object.assign(window, {
-        __lenis: instance,
-        __gsap: gsap,
-        __ScrollTrigger: ScrollTrigger,
-      });
+      // Exposed so scroll behaviour can be inspected from the console.
+      Object.assign(window, { __lenis: instance });
     }
 
     return () => {
       setLenisInstance(null);
-      gsap.ticker.remove(tick);
       instance.destroy();
     };
   }, []);
