@@ -1,8 +1,0 @@
-# The editing page is not linked anywhere and is kept out of search results.
-# What actually guards a change is the passphrase checked by save.php (a salted
-# PBKDF2 hash, 8 wrong guesses per visitor per 15 minutes). The host's Basic
-# login was tried here first and looped on this server, so it was removed.
-<IfModule mod_headers.c>
-  Header always set Cache-Control "private, no-store"
-  Header always set X-Robots-Tag "noindex, nofollow"
-</IfModule>

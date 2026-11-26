@@ -1,19 +1,8 @@
 @import "tailwindcss";
 
 /*
- * Design tokens — cinematic, dark-first.
- *
- * Dark is the native look: true black ground, cool off-white type, one
- * bone-coloured highlight for the figure that matters on each screen.
- * Light mirrors the reference site's body: warm off-white rgb(231,226,220),
- * warm-black ink, and a deep umber where dark uses bone, so the "lit" role
- * still reads as the heaviest tone on the page.
- *
- * The theme is stamped on <html data-theme> by an inline script before first
- * paint; no attribute means dark.
- *
- * Contrast — dark: foreground 18.4:1, muted 6.5:1, lit 15.9:1 on #000.
- *            light: foreground 15.9:1, muted 5.3:1, lit 9.6:1 on #E7E2DC.
+ * Site-wide tokens. The site is dark only; pages style themselves with
+ * Tailwind's palette, and these cover the page ground and the focus ring.
  */
 
 :root {
@@ -25,22 +14,6 @@
   --hairline: #1c1e22;
   --lit: #d8cfc0;
   --ring: #d8cfc0;
-
-  /* The preloader curtain: charcoal with a bone counter in both modes, so the
-     opening frame always matches the reference. */
-  --curtain: #1e1d1b;
-  --curtain-foreground: #d8cfc0;
-}
-
-:root[data-theme="light"] {
-  color-scheme: light;
-
-  --background: #e7e2dc;
-  --foreground: #141311;
-  --muted: #5f5b53;
-  --hairline: #cfc9c0;
-  --lit: #3a342c;
-  --ring: #3a342c;
 }
 
 @theme inline {
@@ -50,8 +23,6 @@
   --color-hairline: var(--hairline);
   --color-lit: var(--lit);
   --color-ring: var(--ring);
-  --color-curtain: var(--curtain);
-  --color-curtain-foreground: var(--curtain-foreground);
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);

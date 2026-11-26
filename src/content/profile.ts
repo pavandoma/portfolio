@@ -79,7 +79,6 @@ export const profile = {
   email: "pavans.doma@outlook.com",
   // Phone is deliberately omitted from the public site to limit scraping/spam.
   // Add it here and render it in the contact section if you want it public.
-  resumeUrl: "/resume.pdf",
   links: [
     { label: "Email", href: "mailto:pavans.doma@outlook.com" },
     { label: "LinkedIn", href: "https://www.linkedin.com/in/pavansrinivasdoma" },

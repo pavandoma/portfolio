@@ -63,18 +63,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-      // The theme script below changes `data-theme` before React hydrates;
-      // this tells React to accept the DOM rather than flag a mismatch.
-      suppressHydrationWarning
     >
       <head>
-        {/* Runs synchronously while the HTML parses, before first paint, so a
-            saved light preference never flashes dark. Dark needs no attribute. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark"){document.documentElement.dataset.theme=t}}catch(e){}})();`,
-          }}
-        />
         {/* Scroll reveals start hidden and are shown by JS; without JS, show
             everything in place. */}
         <noscript>
