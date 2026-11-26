@@ -3,9 +3,9 @@
  * structured data.
  *
  * Set NEXT_PUBLIC_SITE_URL at build time (see .env.example). The fallback is
- * where the portfolio is meant to live — a subdomain of voiyu.com, kept
- * separate from the WordPress site already installed at the domain root.
+ * the main domain, where the site replaced the old WordPress install. The old
+ * subdomain, myportfolio.voiyu.com, redirects here (deploy/myportfolio-redirect).
  */
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://myportfolio.voiyu.com"
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://voiyu.com"
 ).replace(/\/+$/, "");

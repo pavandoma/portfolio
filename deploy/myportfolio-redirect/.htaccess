@@ -1,0 +1,12 @@
+# Upload as the ONLY file in the myportfolio.voiyu.com document root, after
+# the site is live at voiyu.com. Every old link lands on the same path there.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # API and agent calls are POSTs: 308 keeps the method and body, where a 301
+  # lets clients turn them into GETs.
+  RewriteRule ^(api/.*|mcp/?)$ https://voiyu.com/$1 [R=308,L]
+
+  # Everything else: permanent redirect, path and query kept.
+  RewriteRule ^(.*)$ https://voiyu.com/$1 [R=301,L]
+</IfModule>

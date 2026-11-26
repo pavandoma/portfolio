@@ -75,10 +75,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             __html: `(function(){try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark"){document.documentElement.dataset.theme=t}}catch(e){}})();`,
           }}
         />
-        {/* The preloader is server-rendered so content never flashes before
-            the sequence. Without JS nothing would ever lift it. */}
+        {/* Scroll reveals start hidden and are shown by JS; without JS, show
+            everything in place. */}
         <noscript>
-          <style>{`[data-preloader] { display: none !important; }`}</style>
+          <style>{`[data-reveal] { opacity: 1 !important; translate: none !important; }`}</style>
         </noscript>
       </head>
       <body className="flex min-h-full flex-col bg-background font-sans text-foreground">

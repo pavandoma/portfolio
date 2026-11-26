@@ -16,6 +16,10 @@ const nextConfig: NextConfig = {
   // No `next/image` is used; this keeps the door open without a custom
   // loader, since the default optimiser needs a server.
   images: { unoptimized: true },
+
+  // Hide the "N" badge Next.js draws in the corner during `next dev`.
+  // Build errors still show in the error overlay. Production never shows it.
+  devIndicators: false,
 };
 
 export default nextConfig;

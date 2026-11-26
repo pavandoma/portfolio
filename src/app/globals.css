@@ -103,3 +103,10 @@ html.lenis body {
     transition: none;
   }
 }
+
+/* Badge marquee: the track holds two copies, so -50% is one loop. */
+@keyframes badge-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}

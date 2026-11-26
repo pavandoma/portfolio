@@ -3,6 +3,13 @@
 
 Options -Indexes
 
+# Short address for the agent (MCP) endpoint: /mcp runs api/mcp.php.
+# An internal rewrite, not a redirect, so POST bodies arrive intact.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^mcp/?$ api/mcp.php [L]
+</IfModule>
+
 # Next.js writes its not-found page to /404.html.
 ErrorDocument 404 /404.html
 

@@ -71,24 +71,23 @@ export const profile = {
   title: "AI / ML Engineer",
   /** Hero display headline. Kept short — it is set in serif at ~60px. */
   headline: "Building intelligence that earns trust.",
-  availability: "Available for select collaborations — 2026",
+  availability: "Available for select collaborations",
   focusAreas: ["RAG systems", "MLOps", "Evaluation"],
   tagline:
     "I build retrieval-augmented LLM systems and the data pipelines that keep them reliable in production.",
   location: "Buffalo, NY",
-  email: "pavand.srini@gmail.com",
+  email: "pavans.doma@outlook.com",
   // Phone is deliberately omitted from the public site to limit scraping/spam.
   // Add it here and render it in the contact section if you want it public.
   resumeUrl: "/resume.pdf",
   links: [
-    { label: "Email", href: "mailto:pavand.srini@gmail.com" },
+    { label: "Email", href: "mailto:pavans.doma@outlook.com" },
     { label: "LinkedIn", href: "https://www.linkedin.com/in/pavansrinivasdoma" },
-    // TODO: add your GitHub profile — the single biggest gap for an ML portfolio.
-    // { label: "GitHub", href: "https://github.com/<username>" },
+    { label: "GitHub", href: "https://github.com/pavandoma" },
   ] satisfies Link[],
   about: [
     "I'm an AI/ML engineer focused on making language models dependable enough to ship. Most of my work sits at the seam between retrieval, evaluation, and infrastructure — the parts that decide whether a demo survives contact with real users.",
-    "I recently finished a Master's in Engineering Science at the University at Buffalo, after a B.Tech in Artificial Intelligence at SRM. Alongside my degree I led data operations at UB, where I owned the schemas, ETL pipelines, and reporting that the operations team ran on day to day.",
+    "I recently finished a Master's in Artificial Intelligence at the University at Buffalo, after a Bachelor's in Artificial Intelligence at SRM. Alongside my degree I led data operations at UB, where I owned the schemas, ETL pipelines, and reporting that the operations team ran on day to day.",
   ],
 };
 
@@ -230,7 +229,7 @@ export const projects: Project[] = [
 export const experience: Experience[] = [
   {
     company: "University at Buffalo",
-    role: "Data Engineer — Operations Lead",
+    role: "Data Engineer",
     period: "Sep 2024 – Dec 2025",
     location: "Buffalo, NY",
     bullets: [
@@ -246,13 +245,13 @@ export const experience: Experience[] = [
 export const education: Education[] = [
   {
     institution: "University at Buffalo, SUNY",
-    degree: "M.S. in Engineering Science",
+    degree: "Master's in Artificial Intelligence",
     period: "Jan 2026",
     location: "Buffalo, NY",
   },
   {
     institution: "SRM Institute of Science and Technology",
-    degree: "B.Tech in Artificial Intelligence",
+    degree: "Bachelor's in Artificial Intelligence",
     period: "May 2024",
     location: "Chennai, India",
   },

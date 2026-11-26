@@ -28,8 +28,17 @@ function data_dir(): string
     if (is_string($override) && $override !== '') {
         return rtrim($override, '/\\');
     }
-    // .../domains/<domain>/public_html/<site>  →  .../domains/<domain>/portfolio-data
-    return dirname((string) ($_SERVER['DOCUMENT_ROOT'] ?? __DIR__), 2) . '/portfolio-data';
+    // portfolio-data sits beside public_html, wherever the site is served from:
+    //   .../domains/<domain>/public_html          (site at the domain root)
+    //   .../domains/<domain>/public_html/<site>   (site on a subdomain folder)
+    // both resolve to .../domains/<domain>/portfolio-data.
+    $dir = (string) ($_SERVER['DOCUMENT_ROOT'] ?? __DIR__);
+    for ($probe = $dir; $probe !== dirname($probe); $probe = dirname($probe)) {
+        if (basename($probe) === 'public_html') {
+            return dirname($probe) . '/portfolio-data';
+        }
+    }
+    return dirname($dir, 2) . '/portfolio-data';
 }
 
 function respond(int $status, array $body): void

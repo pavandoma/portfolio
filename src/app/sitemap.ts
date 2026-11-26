@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { posts } from "@/content/blog";
 import { SITE_URL } from "@/lib/site";
 
 // Static export: generated once at build into /sitemap.xml.
@@ -18,5 +19,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.7,
     },
+    ...posts.map((p) => ({
+      url: `${SITE_URL}/blog/${p.slug}/`,
+      lastModified: new Date(`${p.date}T12:00:00Z`),
+      changeFrequency: "yearly" as const,
+      priority: 0.6,
+    })),
   ];
 }
