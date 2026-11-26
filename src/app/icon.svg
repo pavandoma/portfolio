@@ -1,6 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="12" fill="#000000"/>
-  <ellipse cx="32" cy="32" rx="21" ry="8.5" fill="none" stroke="#eaeef4" stroke-opacity="0.45" stroke-width="1.6" transform="rotate(-30 32 32)"/>
-  <circle cx="32" cy="32" r="21" fill="none" stroke="#d8cfc0" stroke-width="2.2"/>
-  <circle cx="53" cy="32" r="2.6" fill="#d8cfc0"/>
+  <!-- The voiyu eye: white sclera with a soft gray rim so it holds its edge on
+       light browser tabs, green iris, pupil glancing up-right, highlight. -->
+  <circle cx="32" cy="32" r="30.5" fill="#fcfcfd" stroke="#cbd5e1" stroke-width="1.5"/>
+  <circle cx="36.6" cy="31.4" r="20.9" fill="#17d18c"/>
+  <circle cx="41.6" cy="26.6" r="11.1" fill="#000000"/>
+  <circle cx="46.2" cy="20.9" r="5.4" fill="#ffffff"/>
 </svg>
