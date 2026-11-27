@@ -6,9 +6,11 @@ type Snippet = { code: string; prompt?: boolean; hint?: string };
 
 /**
  * "Add me to your agent": the MCP endpoint as a copyable snippet, one tab per
- * client. ChatGPT takes the bare URL as a custom connector; Claude Code takes
- * a one-line command; most other clients (Cursor, Claude Desktop, VS Code)
- * accept the JSON.
+ * client. Claude Code and the Codex CLI take a one-line command; ChatGPT
+ * takes the bare URL as a custom connector.
+ *
+ * Tabs and Copy are 44px tall (the phone touch-target size) and use
+ * `touch-action: manipulation` so a tap never waits on double-tap-to-zoom.
  */
 export function AgentConnect({ url }: { url: string }) {
   const snippets: Record<string, Snippet> = {
@@ -17,7 +19,11 @@ export function AgentConnect({ url }: { url: string }) {
       code: url,
       hint: "Developer mode → add a connector with this URL, no auth.",
     },
-    JSON: { code: JSON.stringify({ mcpServers: { pavan: { url } } }, null, 2) },
+    CLI: {
+      code: `codex mcp add pavan --url ${url}`,
+      prompt: true,
+      hint: "OpenAI Codex CLI. Any MCP client that takes a URL works too.",
+    },
   };
   const tabs = Object.keys(snippets);
   const [tab, setTab] = useState(tabs[0]);
@@ -53,8 +59,10 @@ export function AgentConnect({ url }: { url: string }) {
                   setTab(t);
                   setCopied(false);
                 }}
-                className={`px-3 py-2.5 font-mono text-xs transition-[color,scale] duration-150 active:scale-95 ${
-                  tab === t ? "text-emerald-300" : "text-gray-400 hover:text-gray-300"
+                className={`flex min-h-11 touch-manipulation items-center border-b-2 px-3 font-mono text-xs transition-[color,border-color,scale] duration-150 active:scale-95 ${
+                  tab === t
+                    ? "border-emerald-400 text-emerald-300"
+                    : "border-transparent text-gray-400 hover:text-gray-300"
                 }`}
               >
                 {t}
@@ -64,7 +72,7 @@ export function AgentConnect({ url }: { url: string }) {
           <button
             type="button"
             onClick={copy}
-            className="rounded-md px-3 py-2.5 font-mono text-xs text-gray-400 transition-[color,background-color,scale] duration-200 hover:bg-emerald-400/10 hover:text-emerald-300 active:scale-95"
+            className="flex min-h-11 touch-manipulation items-center rounded-md px-3 font-mono text-xs text-gray-400 transition-[color,background-color,scale] duration-200 hover:bg-emerald-400/10 hover:text-emerald-300 active:scale-95"
             aria-live="polite"
           >
             {copied ? "Copied ✓" : "Copy"}
