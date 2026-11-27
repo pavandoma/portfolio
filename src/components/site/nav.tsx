@@ -146,12 +146,15 @@ export function SiteNav({
   }`;
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4">
+    // The header is a transparent box as tall as the menu (the menu stays in
+    // the layout so it can animate closed). It must not catch taps meant for
+    // the page beneath, so only its actual controls take pointer events.
+    <header className="pointer-events-none fixed inset-x-0 top-0 z-50 px-4 pt-4">
       <nav className="relative mx-auto flex h-14 max-w-7xl items-center justify-between">
         <a
           href={`${base}#home`}
           onClick={(e) => go(e, "#home")}
-          className={`px-4 py-2 font-mono text-sm font-semibold text-white active:scale-95 ${glass}`}
+          className={`pointer-events-auto px-4 py-2 font-mono text-sm font-semibold text-white active:scale-95 ${glass}`}
         >
           <span className="text-emerald-400">&lt;</span>Pavan
           <span className="text-emerald-400">/&gt;</span>
@@ -159,7 +162,7 @@ export function SiteNav({
 
         {/* Centred link pill */}
         <ul
-          className={`absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-full border p-1 backdrop-blur-md transition-colors duration-300 lg:flex ${solidIfAsked} ${
+          className={`pointer-events-auto absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-full border p-1 backdrop-blur-md transition-colors duration-300 lg:flex ${solidIfAsked} ${
             scrolled ? "border-white/10 bg-gray-900/80" : "border-white/10 bg-white/5"
           }`}
         >
@@ -197,7 +200,7 @@ export function SiteNav({
           })}
         </ul>
 
-        <div className={`flex items-center gap-1 p-1 ${glass}`}>
+        <div className={`pointer-events-auto flex items-center gap-1 p-1 ${glass}`}>
           <a
             href={`${base}#contact`}
             onClick={(e) => go(e, "#contact")}
@@ -227,7 +230,9 @@ export function SiteNav({
         id="site-menu"
         inert={!open}
         className={`mx-auto mt-2 max-w-7xl origin-top-right space-y-1 rounded-3xl border border-white/10 bg-gray-900/95 p-2 backdrop-blur-md transition-[opacity,scale,translate,visibility] duration-300 ${settle} motion-reduce:scale-100 motion-reduce:translate-none lg:hidden ${solidIfAsked} ${
-          open ? "visible scale-100 opacity-100" : "invisible -translate-y-1 scale-95 opacity-0"
+          open
+            ? "pointer-events-auto visible scale-100 opacity-100"
+            : "invisible -translate-y-1 scale-95 opacity-0"
         }`}
       >
         {links.map((l) => (
